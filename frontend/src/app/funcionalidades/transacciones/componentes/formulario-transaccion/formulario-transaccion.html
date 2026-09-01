@@ -1,0 +1,97 @@
+<!-- Fondo oscurecido: al pulsarlo se cierra la ventana. -->
+<div class="fondo" (click)="cerrar.emit()"></div>
+
+<!--
+  role="dialog" + aria-modal: los lectores de pantalla anuncian que se ha
+  abierto una ventana y que el resto de la página queda en segundo plano.
+-->
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-modal">
+  <header class="modal__cabecera">
+    <h2 id="titulo-modal" class="modal__titulo">Nueva transacción</h2>
+    <button type="button" class="modal__cerrar" aria-label="Cerrar" (click)="cerrar.emit()">
+      <app-icono nombre="cerrar" [tamano]="16" />
+    </button>
+  </header>
+
+  <form class="formulario" [formGroup]="formulario" (ngSubmit)="guardar()">
+    <!-- ---------- Comercio ---------- -->
+    <label class="campo">
+      <span class="campo__etiqueta">Comercio</span>
+      <select formControlName="comercio_id">
+        <option value="">Selecciona un comercio…</option>
+        @for (comercio of comercios(); track comercio.id) {
+          <option [value]="comercio.id">{{ comercio.nombre }}</option>
+        }
+      </select>
+      @if (tieneError('comercio_id')) {
+        <span class="campo__error">Elige un comercio.</span>
+      }
+    </label>
+
+    <!-- ---------- Importe y moneda ---------- -->
+    <div class="campo__fila">
+      <label class="campo">
+        <span class="campo__etiqueta">Importe</span>
+        <input type="number" min="0.01" step="0.01" formControlName="monto" />
+        @if (tieneError('monto')) {
+          <span class="campo__error">Introduce un importe mayor que cero.</span>
+        }
+      </label>
+
+      <label class="campo campo--estrecho">
+        <span class="campo__etiqueta">Moneda</span>
+        <select formControlName="moneda">
+          @for (moneda of monedas; track moneda) {
+            <option [value]="moneda">{{ moneda }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <!-- ---------- Tipo y estado ---------- -->
+    <div class="campo__fila">
+      <label class="campo">
+        <span class="campo__etiqueta">Tipo</span>
+        <select formControlName="tipo">
+          @for (tipo of tipos; track tipo.valor) {
+            <option [value]="tipo.valor">{{ tipo.texto }}</option>
+          }
+        </select>
+      </label>
+
+      <label class="campo">
+        <span class="campo__etiqueta">Estado</span>
+        <select formControlName="estado">
+          @for (estado of estados; track estado.valor) {
+            <option [value]="estado.valor">{{ estado.texto }}</option>
+          }
+        </select>
+      </label>
+    </div>
+
+    <!-- ---------- Fecha ---------- -->
+    <label class="campo">
+      <span class="campo__etiqueta">Fecha</span>
+      <input type="date" formControlName="fecha" />
+    </label>
+
+    <!-- ---------- Descripción ---------- -->
+    <label class="campo">
+      <span class="campo__etiqueta">Descripción (opcional)</span>
+      <input type="text" maxlength="120" formControlName="descripcion" placeholder="Concepto…" />
+      @if (tieneError('descripcion')) {
+        <span class="campo__error">Máximo 120 caracteres.</span>
+      }
+    </label>
+
+    <!-- ---------- Botones ---------- -->
+    <footer class="modal__pie">
+      <button type="button" class="boton boton--secundario" (click)="cerrar.emit()">
+        Cancelar
+      </button>
+      <button type="submit" class="boton boton--principal" [disabled]="guardando()">
+        {{ guardando() ? 'Guardando…' : 'Guardar' }}
+      </button>
+    </footer>
+  </form>
+</div>

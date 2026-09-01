@@ -1,0 +1,5 @@
+<!-- La clase modificadora (etiqueta--completada, etc.) aporta el color. -->
+<span class="etiqueta" [class]="'etiqueta etiqueta--' + estado()">
+  <app-icono [nombre]="icono()" [tamano]="14" [grosor]="2" />
+  <span class="etiqueta__texto">{{ texto() }}</span>
+</span>

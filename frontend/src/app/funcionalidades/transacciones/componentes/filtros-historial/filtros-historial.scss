@@ -1,0 +1,158 @@
+@use '../../../../../estilos/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.filtros {
+  width: 320px;
+  padding: var(--esp-4);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-lg);
+
+  &__cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--esp-4);
+  }
+
+  &__titulo {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__cerrar {
+    @include m.boton-limpio;
+    @include m.centrar;
+    @include m.foco-visible;
+
+    width: 26px;
+    height: 26px;
+    border-radius: var(--radio-xs);
+    color: var(--color-texto-suave);
+
+    &:hover {
+      background: var(--color-superficie-suave);
+    }
+  }
+
+  &__pie {
+    display: flex;
+    gap: var(--esp-2);
+    margin-top: var(--esp-5);
+  }
+}
+
+// --- Bloques del formulario --------------------------------------------------
+.grupo {
+  margin: 0 0 var(--esp-4);
+  padding: 0;
+  border: 0;
+
+  &__titulo {
+    padding: 0;
+    margin-bottom: var(--esp-2);
+    color: var(--color-texto-suave);
+    font-size: 11.5px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+
+  &__opciones {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+
+  &__fechas {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--esp-2);
+  }
+}
+
+// --- Pastillas de selección --------------------------------------------------
+.pastilla {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  padding: 7px 13px;
+  border-radius: var(--radio-completo);
+  background: var(--color-superficie-suave);
+  color: var(--color-texto-suave);
+  font-size: 12.5px;
+  font-weight: 500;
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover {
+    background: #eeeef4;
+  }
+
+  &--activa {
+    background: var(--color-texto);
+    color: #fff;
+
+    &:hover {
+      background: var(--color-texto);
+    }
+  }
+}
+
+// --- Campos de fecha ---------------------------------------------------------
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  &__etiqueta {
+    color: var(--color-texto-suave);
+    font-size: 11.5px;
+  }
+
+  input {
+    padding: 8px 10px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-xs);
+    background: var(--color-superficie);
+    font-size: 12.5px;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-violeta);
+      outline-offset: 1px;
+    }
+  }
+}
+
+// --- Botones del pie ---------------------------------------------------------
+.boton {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radio-xs);
+  font-size: 13px;
+  font-weight: 600;
+  transition: opacity 0.15s ease, background 0.15s ease;
+
+  &--principal {
+    background: var(--color-texto);
+    color: #fff;
+
+    &:hover {
+      opacity: 0.88;
+    }
+  }
+
+  &--secundario {
+    background: var(--color-superficie-suave);
+    color: var(--color-texto);
+
+    &:hover {
+      background: #eeeef4;
+    }
+  }
+}

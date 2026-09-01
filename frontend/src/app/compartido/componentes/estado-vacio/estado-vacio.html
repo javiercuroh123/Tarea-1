@@ -1,0 +1,17 @@
+<div class="vacio" [class.vacio--error]="esError()">
+  <div class="vacio__icono">
+    <app-icono [nombre]="icono()" [tamano]="26" />
+  </div>
+
+  <p class="vacio__titulo">{{ titulo() }}</p>
+
+  @if (descripcion()) {
+    <p class="vacio__descripcion">{{ descripcion() }}</p>
+  }
+
+  @if (textoAccion()) {
+    <button type="button" class="vacio__boton" (click)="accion.emit()">
+      {{ textoAccion() }}
+    </button>
+  }
+</div>

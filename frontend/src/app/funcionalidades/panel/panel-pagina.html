@@ -1,0 +1,41 @@
+<div class="panel">
+  <p class="panel__saludo">{{ saludo() }} 👋</p>
+
+  <!-- ---------- Indicadores ---------- -->
+  <div class="panel__metricas">
+    <app-metrica
+      etiqueta="Ingresos"
+      [valor]="ingresos()"
+      icono="check-circulo"
+      color="#067a55"
+      detalle="Movimientos completados"
+    />
+    <app-metrica
+      etiqueta="Gastos"
+      [valor]="egresos()"
+      icono="grafico"
+      color="#7c3aed"
+      detalle="Movimientos completados"
+    />
+    <app-metrica
+      etiqueta="Saldo"
+      [valor]="saldo()"
+      icono="documento"
+      color="#14151a"
+      detalle="Ingresos menos gastos"
+    />
+    <app-metrica
+      etiqueta="Pendientes"
+      [valor]="pendientes()"
+      icono="reloj"
+      color="#96620a"
+      [detalle]="detallePendientes()"
+    />
+  </div>
+
+  <!-- ---------- Gráfico y transferencia ---------- -->
+  <div class="panel__bloques">
+    <app-volumen-pagos />
+    <app-transferencia-rapida />
+  </div>
+</div>

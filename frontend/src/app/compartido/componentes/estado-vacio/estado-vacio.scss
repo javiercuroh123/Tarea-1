@@ -1,0 +1,67 @@
+@use '../../../../estilos/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--esp-2);
+  padding: var(--esp-10) var(--esp-5);
+  text-align: center;
+
+  &__icono {
+    @include m.centrar;
+
+    width: 52px;
+    height: 52px;
+    margin-bottom: var(--esp-2);
+    border-radius: 50%;
+    background: var(--color-superficie-suave);
+    color: var(--color-texto-suave);
+  }
+
+  &__titulo {
+    font-size: 15px;
+    font-weight: 600;
+  }
+
+  &__descripcion {
+    max-width: 46ch;
+    color: var(--color-texto-suave);
+    font-size: 13.5px;
+  }
+
+  &__boton {
+    @include m.boton-limpio;
+    @include m.foco-visible;
+
+    margin-top: var(--esp-3);
+    padding: 9px 18px;
+    border-radius: var(--radio-completo);
+    background: var(--color-texto);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 600;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+      opacity: 0.85;
+    }
+  }
+
+  // Variante de error: icono y título en rojo.
+  &--error {
+    .vacio__icono {
+      background: var(--color-error-fondo);
+      color: var(--color-error-texto);
+    }
+
+    .vacio__titulo {
+      color: var(--color-error-texto);
+    }
+  }
+}

@@ -1,0 +1,73 @@
+@use '../../../../estilos/mixins' as m;
+
+:host {
+  display: block;
+  // Permite que la tarjeta se estire dentro de una rejilla o columna flex.
+  height: 100%;
+}
+
+.tarjeta {
+  @include m.tarjeta;
+
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  padding: var(--esp-5);
+
+  &--sin-relleno {
+    padding: 0;
+
+    .tarjeta__cabecera {
+      padding: var(--esp-5) var(--esp-6) 0;
+    }
+  }
+
+  // --- Cabecera -------------------------------------------------------------
+  &__cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--esp-3);
+    margin-bottom: var(--esp-4);
+  }
+
+  &__titulo-zona {
+    @include m.fila(var(--esp-2));
+
+    min-width: 0; // permite que el título se trunque
+  }
+
+  &__titulo {
+    @include m.texto-truncado;
+
+    font-size: 17px;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+  }
+
+  &__acciones {
+    @include m.fila(var(--esp-2));
+
+    flex-shrink: 0;
+  }
+
+  // --- Asa de arrastre: dos columnas de tres puntitos -----------------------
+  &__asa {
+    display: grid;
+    grid-template-columns: repeat(2, 3px);
+    gap: 2px;
+
+    i {
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: var(--color-texto-tenue);
+    }
+  }
+
+  // --- Cuerpo ---------------------------------------------------------------
+  &__cuerpo {
+    flex: 1;
+    min-height: 0; // imprescindible para que un hijo con scroll funcione
+  }
+}

@@ -1,0 +1,46 @@
+<nav class="barra" aria-label="Navegación principal">
+  <!-- Logotipo: líneas onduladas, como en el diseño de referencia. -->
+  <a routerLink="/panel" class="barra__logo" aria-label="Payline, ir al panel">
+    <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
+      <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+        <path d="M4 11c4-4 8 4 12 0s8-4 12 0" />
+        <path d="M4 17c4-4 8 4 12 0s8-4 12 0" />
+        <path d="M4 23c4-4 8 4 12 0s8-4 12 0" />
+      </g>
+    </svg>
+  </a>
+
+  <!-- Opciones principales -->
+  <ul class="barra__lista">
+    @for (opcion of opciones; track opcion.ruta) {
+      <li>
+        <a
+          class="barra__boton"
+          [routerLink]="opcion.ruta"
+          routerLinkActive="barra__boton--activo"
+          [attr.aria-label]="opcion.etiqueta"
+          [attr.title]="opcion.etiqueta"
+        >
+          <app-icono [nombre]="opcion.icono" [tamano]="20" />
+        </a>
+      </li>
+    }
+  </ul>
+
+  <!-- Opciones secundarias, ancladas abajo -->
+  <ul class="barra__lista barra__lista--inferior">
+    @for (opcion of opcionesInferiores; track opcion.ruta) {
+      <li>
+        <a
+          class="barra__boton barra__boton--tenue"
+          [routerLink]="opcion.ruta"
+          routerLinkActive="barra__boton--activo"
+          [attr.aria-label]="opcion.etiqueta"
+          [attr.title]="opcion.etiqueta"
+        >
+          <app-icono [nombre]="opcion.icono" [tamano]="20" />
+        </a>
+      </li>
+    }
+  </ul>
+</nav>

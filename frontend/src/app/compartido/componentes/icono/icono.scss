@@ -1,0 +1,8 @@
+// El icono se comporta como un elemento en línea que se alinea con el texto.
+:host {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0; // nunca se encoge dentro de un flex
+  line-height: 0;
+}

@@ -1,0 +1,66 @@
+<div class="filtros" role="dialog" aria-label="Filtros del historial">
+  <header class="filtros__cabecera">
+    <p class="filtros__titulo">Filtros</p>
+    <button type="button" class="filtros__cerrar" aria-label="Cerrar filtros" (click)="cerrar.emit()">
+      <app-icono nombre="cerrar" [tamano]="15" />
+    </button>
+  </header>
+
+  <!-- ---------- Estado (selección múltiple) ---------- -->
+  <fieldset class="grupo">
+    <legend class="grupo__titulo">Estado</legend>
+    <div class="grupo__opciones">
+      @for (opcion of opcionesEstado; track opcion.valor) {
+        <button
+          type="button"
+          class="pastilla"
+          [class.pastilla--activa]="estaElegido(opcion.valor)"
+          [attr.aria-pressed]="estaElegido(opcion.valor)"
+          (click)="alternarEstado(opcion.valor)"
+        >
+          {{ opcion.texto }}
+        </button>
+      }
+    </div>
+  </fieldset>
+
+  <!-- ---------- Tipo (selección única) ---------- -->
+  <fieldset class="grupo">
+    <legend class="grupo__titulo">Tipo de movimiento</legend>
+    <div class="grupo__opciones">
+      @for (opcion of opcionesTipo; track opcion.texto) {
+        <button
+          type="button"
+          class="pastilla"
+          [class.pastilla--activa]="tipoElegido() === opcion.valor"
+          [attr.aria-pressed]="tipoElegido() === opcion.valor"
+          (click)="elegirTipo(opcion.valor)"
+        >
+          {{ opcion.texto }}
+        </button>
+      }
+    </div>
+  </fieldset>
+
+  <!-- ---------- Rango de fechas ---------- -->
+  <fieldset class="grupo">
+    <legend class="grupo__titulo">Rango de fechas</legend>
+    <div class="grupo__fechas">
+      <label class="campo">
+        <span class="campo__etiqueta">Desde</span>
+        <input type="date" [value]="desde()" (change)="cambiarDesde($event)" />
+      </label>
+
+      <label class="campo">
+        <span class="campo__etiqueta">Hasta</span>
+        <input type="date" [value]="hasta()" (change)="cambiarHasta($event)" />
+      </label>
+    </div>
+  </fieldset>
+
+  <!-- ---------- Botones ---------- -->
+  <footer class="filtros__pie">
+    <button type="button" class="boton boton--secundario" (click)="reiniciar()">Limpiar</button>
+    <button type="button" class="boton boton--principal" (click)="confirmar()">Aplicar</button>
+  </footer>
+</div>

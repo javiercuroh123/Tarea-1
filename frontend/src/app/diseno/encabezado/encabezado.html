@@ -1,0 +1,77 @@
+<header class="encabezado">
+  <!-- El título de la pantalla es el único <h1> de la página. -->
+  <h1 class="encabezado__titulo">{{ titulo() }}</h1>
+
+  <div class="encabezado__derecha">
+    <!-- ============ Campana de notificaciones ============ -->
+    <div class="campana">
+      <button
+        type="button"
+        class="campana__boton"
+        [attr.aria-expanded]="panelAbierto()"
+        aria-haspopup="true"
+        [attr.aria-label]="'Notificaciones, ' + sinLeer() + ' sin leer'"
+        (click)="alternarPanel()"
+      >
+        <app-icono nombre="campana" [tamano]="20" />
+
+        @if (sinLeer() > 0) {
+          <!-- Punto rojo indicador. El número exacto va en el aria-label. -->
+          <span class="campana__punto" aria-hidden="true"></span>
+        }
+      </button>
+
+      @if (panelAbierto()) {
+        <!-- Capa invisible: al pulsar fuera del panel, se cierra. -->
+        <div class="campana__fondo" (click)="cerrarPanel()"></div>
+
+        <div class="panel" role="dialog" aria-label="Notificaciones">
+          <div class="panel__cabecera">
+            <p class="panel__titulo">Notificaciones</p>
+
+            @if (sinLeer() > 0) {
+              <button type="button" class="panel__accion" (click)="marcarLeidas()">
+                Marcar todas como leídas
+              </button>
+            }
+          </div>
+
+          <ul class="panel__lista">
+            @for (aviso of notificaciones(); track aviso.id) {
+              <li class="panel__item" [class.panel__item--nueva]="!aviso.leida">
+                <p class="panel__item-titulo">{{ aviso.titulo }}</p>
+                @if (aviso.mensaje) {
+                  <p class="panel__item-mensaje">{{ aviso.mensaje }}</p>
+                }
+              </li>
+            } @empty {
+              <li class="panel__vacio">No tienes notificaciones.</li>
+            }
+          </ul>
+        </div>
+      }
+    </div>
+
+    <!-- ============ Ficha del usuario ============ -->
+    @if (usuario(); as datosUsuario) {
+      <div class="usuario">
+        <app-avatar
+          [nombre]="datosUsuario.nombre_completo"
+          [url]="datosUsuario.avatar_url"
+          [color]="datosUsuario.color_avatar"
+          [tamano]="38"
+        />
+        <div class="usuario__datos">
+          <p class="usuario__nombre">{{ datosUsuario.nombre_completo }}</p>
+          <p class="usuario__rol">{{ datosUsuario.rol }}</p>
+        </div>
+      </div>
+    } @else {
+      <!-- Marcador de posición mientras se carga el usuario. -->
+      <div class="usuario usuario--cargando" aria-hidden="true">
+        <span class="usuario__circulo"></span>
+        <span class="usuario__linea"></span>
+      </div>
+    }
+  </div>
+</header>

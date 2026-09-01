@@ -1,0 +1,32 @@
+:host {
+  display: block;
+  width: 100%;
+}
+
+.esqueleto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+
+  &__barra {
+    width: 100%;
+    // Degradado que se desplaza de izquierda a derecha: efecto «brillo».
+    background: linear-gradient(
+      90deg,
+      var(--color-superficie-suave) 25%,
+      #eeeef4 37%,
+      var(--color-superficie-suave) 63%
+    );
+    background-size: 400% 100%;
+    animation: brillo 1.4s ease-in-out infinite;
+  }
+}
+
+@keyframes brillo {
+  from {
+    background-position: 100% 50%;
+  }
+  to {
+    background-position: 0 50%;
+  }
+}

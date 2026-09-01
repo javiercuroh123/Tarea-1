@@ -1,0 +1,159 @@
+<app-tarjeta titulo="Transferencia rápida" [conAsa]="true">
+  <!-- Botón secundario de la cabecera: despliega la lista completa. -->
+  @if (hayMasContactos()) {
+    <button acciones type="button" class="enlace-todos" (click)="verTodos()">
+      {{ textoVerTodos() }}
+    </button>
+  }
+
+  <!-- ============ Fila de contactos ============ -->
+  @if (estadoContactos() === 'cargando') {
+    <app-esqueleto [filas]="1" alto="70px" radio="16px" />
+  } @else {
+    <ul class="contactos">
+      @for (contacto of contactosVisibles(); track contacto.id) {
+        <li>
+          <button
+            type="button"
+            class="contactos__boton"
+            [class.contactos__boton--activo]="contacto.id === contactoSeleccionadoId()"
+            [attr.aria-pressed]="contacto.id === contactoSeleccionadoId()"
+            (click)="seleccionarContacto(contacto.id)"
+          >
+            <app-avatar
+              [nombre]="contacto.nombre"
+              [url]="contacto.avatar_url"
+              [color]="contacto.color_avatar"
+              [tamano]="52"
+            />
+            <span class="contactos__nombre">{{ contacto.nombre.split(' ')[0] }}</span>
+          </button>
+        </li>
+      } @empty {
+        <li class="contactos__vacio">No hay contactos.</li>
+      }
+    </ul>
+  }
+
+  <!-- ============ Importe de origen ============ -->
+  <div class="linea">
+    <span class="linea__icono linea__icono--origen">
+      <app-icono nombre="usuario" [tamano]="13" [grosor]="2" />
+    </span>
+    <span class="linea__texto">
+      De <strong>{{ usuario()?.nombre_completo ?? '—' }}</strong> (tú)
+    </span>
+  </div>
+
+  <div class="importe">
+    <label class="solo-lectores" for="campo-monto">Importe a enviar</label>
+    <input
+      id="campo-monto"
+      class="importe__campo"
+      type="number"
+      min="0"
+      step="0.01"
+      inputmode="decimal"
+      [value]="montoOrigen()"
+      (input)="cambiarMonto($event)"
+    />
+
+    <div class="importe__moneda">
+      <label class="solo-lectores" for="moneda-origen">Moneda de origen</label>
+      <!--
+        `[selected]` va en cada <option> y no `[value]` en el <select>: las
+        opciones se crean con @for DESPUÉS de que se evalúe el <select>, así
+        que un [value] en el padre no encontraría todavía la opción.
+      -->
+      <select id="moneda-origen" (change)="cambiarMonedaOrigen($event)">
+        @for (moneda of monedas; track moneda) {
+          <option [value]="moneda" [selected]="moneda === monedaOrigen()">{{ moneda }}</option>
+        }
+      </select>
+      <app-icono nombre="chevron-abajo" [tamano]="14" />
+    </div>
+  </div>
+
+  <!-- ============ Tasa de cambio ============ -->
+  <div class="tasa">
+    <button
+      type="button"
+      class="tasa__intercambio"
+      aria-label="Intercambiar monedas"
+      (click)="intercambiarMonedas()"
+    >
+      <app-icono nombre="intercambio" [tamano]="16" />
+    </button>
+
+    <span class="tasa__valor">{{ textoTasa() }}</span>
+    <span class="tasa__linea" aria-hidden="true"></span>
+  </div>
+
+  <!-- ============ Importe de destino ============ -->
+  <div class="linea">
+    @if (contactoSeleccionado(); as contacto) {
+      <app-avatar
+        [nombre]="contacto.nombre"
+        [url]="contacto.avatar_url"
+        [color]="contacto.color_avatar"
+        [tamano]="22"
+      />
+      <span class="linea__texto">Para <strong>{{ contacto.nombre }}</strong></span>
+    } @else {
+      <span class="linea__texto linea__texto--tenue">Elige un destinatario</span>
+    }
+  </div>
+
+  <div class="importe">
+    <!-- Solo lectura: este importe lo calcula la tasa de cambio. -->
+    <output class="importe__campo importe__campo--calculado">
+      {{ montoDestinoFormateado() }}
+    </output>
+
+    <div class="importe__moneda">
+      <label class="solo-lectores" for="moneda-destino">Moneda de destino</label>
+      <select id="moneda-destino" (change)="cambiarMonedaDestino($event)">
+        @for (moneda of monedas; track moneda) {
+          <option [value]="moneda" [selected]="moneda === monedaDestino()">{{ moneda }}</option>
+        }
+      </select>
+      <app-icono nombre="chevron-abajo" [tamano]="14" />
+    </div>
+  </div>
+
+  <!-- ============ Deslizante de envío ============ -->
+  <div
+    #pista
+    class="deslizante"
+    [class.deslizante--desactivado]="!puedeEnviar()"
+    (pointermove)="moverArrastre($event, pista)"
+    (pointerup)="soltarArrastre()"
+    (pointercancel)="soltarArrastre()"
+  >
+    <!--
+      Es un <button> real: con el teclado se activa con Intro o Espacio, sin
+      necesidad de arrastrar. La posición se calcula con `calc()`: el progreso
+      (0 a 1) multiplica el recorrido disponible (ancho de la pista menos el
+      tirador y sus márgenes).
+    -->
+    <button
+      type="button"
+      class="deslizante__tirador"
+      [style.left]="'calc(' + progreso() + ' * (100% - 56px))'"
+      [disabled]="!puedeEnviar()"
+      aria-label="Enviar transferencia"
+      (pointerdown)="iniciarArrastre($event)"
+      (click)="enviar()"
+    >
+      <app-icono nombre="flechas-derecha" [tamano]="18" [grosor]="2.2" />
+    </button>
+
+    <span class="deslizante__texto">
+      @if (enviando()) {
+        Enviando…
+      } @else {
+        Arrastra para enviar
+      }
+    </span>
+  </div>
+</app-tarjeta>

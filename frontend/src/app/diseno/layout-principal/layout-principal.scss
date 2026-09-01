@@ -1,0 +1,46 @@
+@use '../../../estilos/mixins' as m;
+@use '../../../estilos/variables' as v;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+.disposicion {
+  display: flex;
+  gap: var(--esp-4);
+  height: 100%;
+  padding: var(--esp-4);
+
+  &__barra {
+    // La barra lateral mantiene su ancho fijo.
+    flex-shrink: 0;
+  }
+
+  &__contenido {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    // `min-width: 0` evita que un hijo ancho (la tabla) desborde el flex.
+    min-width: 0;
+    padding-left: var(--esp-2);
+  }
+
+  &__principal {
+    flex: 1;
+    min-height: 0;
+  }
+}
+
+// --- Tableta y móvil: la barra pasa arriba y todo se apila ------------------
+@include m.hasta(v.$punto-tableta) {
+  .disposicion {
+    flex-direction: column;
+    height: auto;
+    padding: var(--esp-3);
+
+    &__contenido {
+      padding-left: 0;
+    }
+  }
+}

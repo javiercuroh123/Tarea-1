@@ -1,0 +1,81 @@
+@use '../../../estilos/mixins' as m;
+@use '../../../estilos/variables' as v;
+
+:host {
+  display: block;
+  padding-bottom: var(--esp-4);
+}
+
+.informes {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+
+  &__metricas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--esp-4);
+  }
+
+  &__vacio {
+    padding: var(--esp-6) 0;
+    color: var(--color-texto-suave);
+    font-size: 13px;
+    text-align: center;
+  }
+
+  &__pie {
+    margin-top: var(--esp-4);
+    color: var(--color-texto-tenue);
+    font-size: 12px;
+  }
+}
+
+// --- Barras de reparto -------------------------------------------------------
+.reparto {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+
+  &__cabecera {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 6px;
+  }
+
+  &__etiqueta {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  &__cifra {
+    color: var(--color-texto-suave);
+    font-size: 12.5px;
+  }
+
+  &__pista {
+    height: 10px;
+    border-radius: var(--radio-completo);
+    background: var(--color-superficie-suave);
+    overflow: hidden;
+  }
+
+  &__relleno {
+    height: 100%;
+    border-radius: var(--radio-completo);
+    transition: width 0.4s ease;
+  }
+}
+
+// --- Adaptación ---------------------------------------------------------------
+@include m.hasta(v.$punto-escritorio) {
+  .informes__metricas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@include m.hasta(v.$punto-movil) {
+  .informes__metricas {
+    grid-template-columns: 1fr;
+  }
+}

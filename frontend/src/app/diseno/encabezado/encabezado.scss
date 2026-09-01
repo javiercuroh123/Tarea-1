@@ -1,0 +1,212 @@
+@use '../../../estilos/mixins' as m;
+@use '../../../estilos/variables' as v;
+
+:host {
+  display: block;
+}
+
+.encabezado {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-4);
+  margin-bottom: var(--esp-5);
+
+  &__titulo {
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: -0.025em;
+  }
+
+  &__derecha {
+    @include m.fila(var(--esp-3));
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Campana y su desplegable
+// ---------------------------------------------------------------------------
+.campana {
+  position: relative;
+
+  &__boton {
+    @include m.boton-limpio;
+    @include m.centrar;
+    @include m.foco-visible;
+
+    position: relative;
+    width: 46px;
+    height: 46px;
+    border-radius: 50%;
+    background: var(--color-superficie);
+    box-shadow: var(--sombra-sm);
+    transition: transform 0.15s ease;
+
+    &:hover {
+      transform: translateY(-1px);
+    }
+  }
+
+  &__punto {
+    position: absolute;
+    top: 11px;
+    right: 12px;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-error);
+    box-shadow: 0 0 0 2px var(--color-superficie);
+  }
+
+  // Capa transparente a pantalla completa para detectar el clic exterior.
+  &__fondo {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+  }
+}
+
+.panel {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  z-index: 21;
+  width: 320px;
+  padding: var(--esp-4);
+  border-radius: var(--radio-md);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-lg);
+
+  &__cabecera {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--esp-2);
+    margin-bottom: var(--esp-3);
+  }
+
+  &__titulo {
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__accion {
+    @include m.boton-limpio;
+    @include m.foco-visible;
+
+    color: var(--color-violeta);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  &__lista {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-1);
+    max-height: 320px;
+    overflow-y: auto;
+
+    @include m.barra-desplazamiento-fina;
+  }
+
+  &__item {
+    padding: 10px 12px;
+    border-radius: var(--radio-xs);
+    background: var(--color-superficie-suave);
+
+    // Las no leídas llevan una barra violeta a la izquierda.
+    &--nueva {
+      border-left: 3px solid var(--color-violeta);
+    }
+  }
+
+  &__item-titulo {
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  &__item-mensaje {
+    margin-top: 2px;
+    color: var(--color-texto-suave);
+    font-size: 12.5px;
+    line-height: 1.4;
+  }
+
+  &__vacio {
+    padding: var(--esp-5) 0;
+    color: var(--color-texto-suave);
+    font-size: 13px;
+    text-align: center;
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Ficha del usuario
+// ---------------------------------------------------------------------------
+.usuario {
+  @include m.fila(10px);
+
+  padding: 5px 18px 5px 5px;
+  border-radius: var(--radio-completo);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-sm);
+
+  &__datos {
+    min-width: 0;
+  }
+
+  &__nombre {
+    @include m.texto-truncado;
+
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__rol {
+    color: var(--color-texto-suave);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+  }
+
+  // --- Marcador de posición durante la carga -------------------------------
+  &--cargando {
+    padding: 5px 18px 5px 5px;
+  }
+
+  &__circulo {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--color-superficie-suave);
+  }
+
+  &__linea {
+    width: 90px;
+    height: 12px;
+    border-radius: var(--radio-xs);
+    background: var(--color-superficie-suave);
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Adaptación a pantallas pequeñas
+// ---------------------------------------------------------------------------
+@include m.hasta(v.$punto-movil) {
+  .encabezado__titulo {
+    font-size: 24px;
+  }
+
+  // En móvil el nombre ocuparía demasiado: dejamos solo el avatar.
+  .usuario__datos {
+    display: none;
+  }
+
+  .usuario {
+    padding: 5px;
+  }
+
+  .panel {
+    width: min(320px, calc(100vw - 32px));
+  }
+}

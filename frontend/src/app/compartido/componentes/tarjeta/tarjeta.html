@@ -1,0 +1,26 @@
+<section class="tarjeta" [class.tarjeta--sin-relleno]="sinRelleno()">
+  @if (titulo()) {
+    <header class="tarjeta__cabecera">
+      <div class="tarjeta__titulo-zona">
+        @if (conAsa()) {
+          <!-- Asa de arrastre: puramente decorativa (aria-hidden). -->
+          <span class="tarjeta__asa" aria-hidden="true">
+            <i></i><i></i><i></i>
+            <i></i><i></i><i></i>
+          </span>
+        }
+        <h2 class="tarjeta__titulo">{{ titulo() }}</h2>
+      </div>
+
+      <!-- Zona de botones: la rellena quien usa la tarjeta. -->
+      <div class="tarjeta__acciones">
+        <ng-content select="[acciones]" />
+      </div>
+    </header>
+  }
+
+  <div class="tarjeta__cuerpo">
+    <!-- Contenido principal proyectado. -->
+    <ng-content />
+  </div>
+</section>

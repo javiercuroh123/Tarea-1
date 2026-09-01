@@ -1,0 +1,273 @@
+@use '../../../../../estilos/mixins' as m;
+
+:host {
+  display: block;
+}
+
+// --- Botón «Ver todos» de la cabecera ---------------------------------------
+.enlace-todos {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  color: var(--color-violeta);
+  font-size: 13px;
+  font-weight: 600;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+// --- Fila de contactos -------------------------------------------------------
+.contactos {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--esp-3);
+  padding-bottom: var(--esp-4);
+  margin-bottom: var(--esp-4);
+  border-bottom: 1px solid var(--color-borde);
+
+  &__boton {
+    @include m.boton-limpio;
+    @include m.foco-visible;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    padding: 3px;
+    border-radius: var(--radio-md);
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: var(--color-superficie-suave);
+    }
+
+    // Contacto elegido: anillo violeta alrededor del avatar.
+    &--activo {
+      app-avatar {
+        border-radius: 50%;
+        box-shadow: 0 0 0 2px var(--color-superficie), 0 0 0 4px var(--color-violeta);
+      }
+
+      .contactos__nombre {
+        color: var(--color-texto);
+        font-weight: 600;
+      }
+    }
+  }
+
+  &__nombre {
+    max-width: 64px;
+    color: var(--color-texto-suave);
+    font-size: 12px;
+
+    @include m.texto-truncado;
+  }
+
+  &__vacio {
+    color: var(--color-texto-suave);
+    font-size: 13px;
+  }
+}
+
+// --- Línea «De / Para» -------------------------------------------------------
+.linea {
+  @include m.fila(var(--esp-2));
+
+  margin-bottom: var(--esp-2);
+
+  &__icono {
+    @include m.centrar;
+
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+
+    &--origen {
+      background: var(--color-lima);
+      color: var(--color-texto);
+    }
+  }
+
+  &__texto {
+    color: var(--color-texto-suave);
+    font-size: 13px;
+
+    strong {
+      color: var(--color-texto);
+      font-weight: 600;
+    }
+
+    &--tenue {
+      color: var(--color-texto-tenue);
+    }
+  }
+}
+
+// --- Campo de importe --------------------------------------------------------
+.importe {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  margin-bottom: var(--esp-4);
+
+  &__campo {
+    flex: 1;
+    min-width: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    font-size: 30px;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+
+    &:focus {
+      outline: none;
+    }
+
+    // Oculta las flechitas del input numérico: no encajan con el diseño.
+    &::-webkit-outer-spin-button,
+    &::-webkit-inner-spin-button {
+      appearance: none;
+      margin: 0;
+    }
+
+    appearance: textfield;
+
+    // El importe convertido no es editable: se distingue en un gris suave.
+    &--calculado {
+      color: var(--color-texto);
+    }
+  }
+
+  &__moneda {
+    @include m.fila(4px);
+
+    position: relative;
+    padding: 6px 10px;
+    border-radius: var(--radio-xs);
+    color: var(--color-texto-suave);
+    transition: background 0.15s ease;
+
+    &:hover {
+      background: var(--color-superficie-suave);
+    }
+
+    select {
+      appearance: none;
+      border: 0;
+      background: none;
+      font-size: 17px;
+      font-weight: 600;
+      color: var(--color-texto);
+      cursor: pointer;
+
+      &:focus-visible {
+        outline: 2px solid var(--color-violeta);
+        outline-offset: 4px;
+        border-radius: 4px;
+      }
+    }
+  }
+}
+
+// --- Tasa de cambio ----------------------------------------------------------
+.tasa {
+  @include m.fila(var(--esp-3));
+
+  margin-bottom: var(--esp-4);
+
+  &__intercambio {
+    @include m.boton-limpio;
+    @include m.centrar;
+    @include m.foco-visible;
+
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    color: var(--color-violeta);
+    background: var(--color-violeta-suave);
+    transition: transform 0.2s ease;
+
+    &:hover {
+      transform: rotate(180deg);
+    }
+  }
+
+  &__valor {
+    padding: 5px 12px;
+    border-radius: var(--radio-completo);
+    background: var(--color-superficie-suave);
+    color: var(--color-texto-suave);
+    font-size: 12.5px;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+
+  // Línea de puntos que completa el ancho, como en el diseño.
+  &__linea {
+    flex: 1;
+    height: 1px;
+    background: repeating-linear-gradient(
+      90deg,
+      var(--color-borde) 0 6px,
+      transparent 6px 12px
+    );
+  }
+}
+
+// --- Deslizante «Arrastra para enviar» ---------------------------------------
+.deslizante {
+  position: relative;
+  display: flex;
+  align-items: center;
+  height: 56px;
+  border-radius: var(--radio-completo);
+  background: var(--color-superficie-suave);
+  // `touch-action: none` impide que el navegador interprete el arrastre como
+  // desplazamiento de la página en pantallas táctiles.
+  touch-action: none;
+  user-select: none;
+
+  &__tirador {
+    @include m.boton-limpio;
+    @include m.centrar;
+    @include m.foco-visible;
+
+    position: absolute;
+    top: 4px;
+    left: 0;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    margin-left: 4px;
+    background: var(--color-texto);
+    color: #fff;
+    cursor: grab;
+    // Sin transición mientras se arrastra sería brusco; con ella el retorno
+    // al soltar se ve suave.
+    transition: left 0.18s ease, background 0.15s ease;
+
+    &:active {
+      cursor: grabbing;
+    }
+
+    &:disabled {
+      background: var(--color-texto-tenue);
+      cursor: not-allowed;
+    }
+  }
+
+  &__texto {
+    // Deja hueco al tirador y centra el texto en el resto de la pista.
+    padding-left: 68px;
+    color: var(--color-texto-suave);
+    font-size: 13.5px;
+  }
+
+  &--desactivado {
+    opacity: 0.65;
+  }
+}

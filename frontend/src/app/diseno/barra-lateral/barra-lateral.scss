@@ -1,0 +1,88 @@
+@use '../../../estilos/mixins' as m;
+@use '../../../estilos/variables' as v;
+
+:host {
+  display: block;
+  flex-shrink: 0;
+}
+
+.barra {
+  @include m.tarjeta;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: var(--esp-6);
+  width: var(--ancho-barra-lateral);
+  height: 100%;
+  padding: var(--esp-5) 0;
+
+  &__logo {
+    @include m.centrar;
+
+    width: 44px;
+    height: 44px;
+    border-radius: var(--radio-sm);
+    color: var(--color-texto);
+  }
+
+  &__lista {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-2);
+
+    // La lista inferior se empuja al fondo con el margen automático.
+    &--inferior {
+      margin-top: auto;
+    }
+  }
+
+  &__boton {
+    @include m.centrar;
+    @include m.foco-visible;
+
+    width: 46px;
+    height: 46px;
+    border-radius: 16px;
+    color: var(--color-texto);
+    transition: background 0.16s ease, color 0.16s ease;
+
+    &:hover {
+      background: var(--color-superficie-suave);
+    }
+
+    // Opción seleccionada: círculo lima, como en el diseño.
+    &--activo {
+      background: var(--color-lima);
+      color: var(--color-texto);
+
+      &:hover {
+        background: var(--color-lima-oscuro);
+      }
+    }
+
+    &--tenue {
+      color: var(--color-texto-suave);
+    }
+  }
+}
+
+// --- Versión móvil: la barra pasa a ser horizontal, arriba del contenido -----
+@include m.hasta(v.$punto-tableta) {
+  .barra {
+    flex-direction: row;
+    width: 100%;
+    height: auto;
+    padding: var(--esp-2) var(--esp-4);
+    gap: var(--esp-4);
+
+    &__lista {
+      flex-direction: row;
+
+      &--inferior {
+        margin-top: 0;
+        margin-left: auto;
+      }
+    }
+  }
+}

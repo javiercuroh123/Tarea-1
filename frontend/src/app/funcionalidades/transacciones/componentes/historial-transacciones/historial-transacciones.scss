@@ -1,0 +1,389 @@
+@use '../../../../../estilos/mixins' as m;
+@use '../../../../../estilos/variables' as v;
+
+:host {
+  display: block;
+  height: 100%;
+}
+
+// ============================================================================
+// Botones reutilizados dentro de esta tarjeta
+// ============================================================================
+.boton-icono {
+  @include m.boton-limpio;
+  @include m.centrar;
+  @include m.foco-visible;
+
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  color: var(--color-texto-suave);
+  transition: background 0.15s ease, color 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: var(--color-superficie-suave);
+    color: var(--color-texto);
+  }
+
+  &:disabled {
+    opacity: 0.35;
+    cursor: not-allowed;
+  }
+}
+
+.boton-texto {
+  @include m.boton-limpio;
+  @include m.fila(6px);
+  @include m.foco-visible;
+
+  padding: 8px 14px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radio-completo);
+  font-size: 13px;
+  font-weight: 500;
+  transition: border-color 0.15s ease, background 0.15s ease;
+
+  &:hover {
+    background: var(--color-superficie-suave);
+  }
+
+  // Se resalta si hay filtros aplicados: el usuario ve que la tabla no está
+  // mostrando todo.
+  &--activo {
+    border-color: var(--color-violeta);
+    color: var(--color-violeta);
+  }
+}
+
+.boton-nuevo {
+  @include m.boton-limpio;
+  @include m.fila(6px);
+  @include m.foco-visible;
+
+  padding: 9px 15px;
+  border-radius: var(--radio-completo);
+  background: var(--color-texto);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: opacity 0.15s ease;
+
+  &:hover {
+    opacity: 0.87;
+  }
+}
+
+// ============================================================================
+// Barra de herramientas
+// ============================================================================
+.herramientas {
+  @include m.fila(var(--esp-2));
+}
+
+.buscador {
+  @include m.fila(4px);
+
+  padding-left: 0;
+  border-radius: var(--radio-completo);
+  transition: background 0.2s ease, padding 0.2s ease;
+
+  &--abierto {
+    padding-left: var(--esp-3);
+    background: var(--color-superficie-suave);
+  }
+
+  &__campo {
+    width: 210px;
+    border: 0;
+    background: none;
+    font-size: 13px;
+
+    &:focus {
+      outline: none;
+    }
+
+    @include m.hasta(v.$punto-tableta) {
+      width: 140px;
+    }
+  }
+}
+
+.filtros-zona {
+  position: relative;
+
+  // Capa transparente para cerrar el panel al pulsar fuera.
+  &__fondo {
+    position: fixed;
+    inset: 0;
+    z-index: 30;
+  }
+
+  &__panel {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 31;
+  }
+}
+
+// ============================================================================
+// Barra de selección múltiple
+// ============================================================================
+.seleccion {
+  @include m.fila(var(--esp-3));
+
+  margin: 0 var(--esp-6) var(--esp-3);
+  padding: 10px 14px;
+  border-radius: var(--radio-sm);
+  background: var(--color-violeta-suave);
+
+  &__texto {
+    flex: 1;
+    color: var(--color-violeta);
+    font-size: 13px;
+    font-weight: 600;
+  }
+
+  &__accion {
+    @include m.boton-limpio;
+    @include m.fila(5px);
+    @include m.foco-visible;
+
+    padding: 6px 12px;
+    border-radius: var(--radio-completo);
+    background: var(--color-error);
+    color: #fff;
+    font-size: 12.5px;
+    font-weight: 600;
+  }
+
+  &__cancelar {
+    @include m.boton-limpio;
+    @include m.foco-visible;
+
+    color: var(--color-texto-suave);
+    font-size: 12.5px;
+  }
+}
+
+.carga {
+  padding: var(--esp-4) var(--esp-6);
+}
+
+// ============================================================================
+// Tabla
+// ============================================================================
+.tabla-envoltorio {
+  // En pantallas estrechas la tabla se desplaza en horizontal dentro de su
+  // propio contenedor, sin romper el diseño de la página.
+  overflow-x: auto;
+
+  @include m.barra-desplazamiento-fina;
+}
+
+.tabla {
+  width: 100%;
+  border-collapse: collapse;
+  // Ancho mínimo para que las columnas no se aplasten al hacer scroll.
+  min-width: 720px;
+
+  // --- Cabecera -------------------------------------------------------------
+  thead th {
+    padding: 12px var(--esp-4);
+    background: var(--color-superficie-suave);
+    color: var(--color-texto-suave);
+    font-size: 12.5px;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+
+    &:first-child {
+      border-radius: var(--radio-sm) 0 0 var(--radio-sm);
+    }
+
+    &:last-child {
+      border-radius: 0 var(--radio-sm) var(--radio-sm) 0;
+    }
+  }
+
+  &__orden {
+    @include m.boton-limpio;
+    @include m.fila(5px);
+    @include m.foco-visible;
+
+    color: inherit;
+    font-size: inherit;
+
+    &:hover {
+      color: var(--color-texto);
+    }
+
+    // La columna por la que se ordena resalta su flecha.
+    &--activo {
+      color: var(--color-violeta);
+    }
+  }
+
+  // --- Filas ----------------------------------------------------------------
+  tbody tr {
+    border-bottom: 1px solid var(--color-borde);
+    transition: background 0.12s ease;
+
+    &:hover {
+      background: var(--color-superficie-suave);
+    }
+
+    &:last-child {
+      border-bottom: 0;
+    }
+  }
+
+  &__fila--marcada {
+    background: var(--color-violeta-suave);
+
+    &:hover {
+      background: var(--color-violeta-suave);
+    }
+  }
+
+  td {
+    padding: 14px var(--esp-4);
+    vertical-align: middle;
+  }
+
+  // --- Columnas concretas ---------------------------------------------------
+  &__casilla {
+    width: 44px;
+
+    input {
+      width: 16px;
+      height: 16px;
+      accent-color: var(--color-violeta);
+      cursor: pointer;
+    }
+  }
+
+  &__fecha {
+    color: var(--color-texto-suave);
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  &__importe {
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+
+    &--ingreso {
+      color: var(--color-ingreso);
+    }
+
+    // Los movimientos fallidos se marcan en rojo, como en el diseño.
+    &--fallido {
+      color: var(--color-egreso-fallido);
+    }
+  }
+
+  &__acciones {
+    position: relative;
+    width: 56px;
+    text-align: right;
+  }
+}
+
+// --- Celda de comercio -------------------------------------------------------
+.comercio {
+  @include m.fila(var(--esp-3));
+
+  &__datos {
+    min-width: 0;
+  }
+
+  &__nombre {
+    @include m.texto-truncado;
+
+    max-width: 240px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  &__categoria {
+    @include m.texto-truncado;
+
+    max-width: 240px;
+    color: var(--color-texto-suave);
+    font-size: 12.5px;
+  }
+}
+
+// --- Menú contextual de la fila ---------------------------------------------
+.menu-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+}
+
+.menu {
+  position: absolute;
+  top: calc(100% - 4px);
+  right: var(--esp-4);
+  z-index: 41;
+  min-width: 196px;
+  padding: 6px;
+  border-radius: var(--radio-sm);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-lg);
+  text-align: left;
+
+  button {
+    @include m.boton-limpio;
+    @include m.fila(9px);
+    @include m.foco-visible;
+
+    width: 100%;
+    padding: 9px 10px;
+    border-radius: var(--radio-xs);
+    color: var(--color-texto);
+    font-size: 13px;
+
+    &:hover {
+      background: var(--color-superficie-suave);
+    }
+  }
+
+  &__peligro {
+    color: var(--color-error-texto) !important;
+
+    &:hover {
+      background: var(--color-error-fondo) !important;
+    }
+  }
+}
+
+// ============================================================================
+// Paginación
+// ============================================================================
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--esp-3);
+  padding: var(--esp-3) var(--esp-6) var(--esp-5);
+
+  &__texto {
+    color: var(--color-texto-suave);
+    font-size: 12.5px;
+  }
+
+  &__controles {
+    @include m.fila(var(--esp-2));
+  }
+
+  &__indicador {
+    min-width: 54px;
+    color: var(--color-texto-suave);
+    font-size: 12.5px;
+    font-weight: 600;
+    text-align: center;
+  }
+}

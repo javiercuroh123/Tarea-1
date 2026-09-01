@@ -1,0 +1,54 @@
+<div class="informes">
+  <!-- ---------- Indicadores ---------- -->
+  <div class="informes__metricas">
+    <app-metrica etiqueta="Ingresos totales" [valor]="ingresos()" icono="check-circulo" color="#067a55" />
+    <app-metrica etiqueta="Gastos totales" [valor]="egresos()" icono="grafico" color="#7c3aed" />
+    <app-metrica etiqueta="Tasa de éxito" [valor]="tasaExito()" icono="documento" color="#14151a" />
+    <app-metrica etiqueta="Importe medio" [valor]="importeMedio()" icono="orden" color="#96620a" />
+  </div>
+
+  <!-- ---------- Distribución por estado ---------- -->
+  <app-tarjeta titulo="Distribución por estado">
+    @if (cargando()) {
+      <app-esqueleto [filas]="3" alto="34px" />
+    } @else if (distribucion().length === 0) {
+      <p class="informes__vacio">Todavía no hay movimientos que analizar.</p>
+    } @else {
+      <ul class="reparto">
+        @for (barra of distribucion(); track barra.etiqueta) {
+          <li class="reparto__fila">
+            <div class="reparto__cabecera">
+              <span class="reparto__etiqueta">{{ barra.etiqueta }}</span>
+              <span class="reparto__cifra">
+                {{ barra.cantidad }} · {{ barra.porcentaje }} %
+              </span>
+            </div>
+
+            <!--
+              role="meter" con sus valores: un lector de pantalla anuncia el
+              porcentaje aunque no vea la barra.
+            -->
+            <div
+              class="reparto__pista"
+              role="meter"
+              [attr.aria-valuenow]="barra.porcentaje"
+              aria-valuemin="0"
+              aria-valuemax="100"
+              [attr.aria-label]="barra.etiqueta"
+            >
+              <div
+                class="reparto__relleno"
+                [style.width.%]="barra.porcentaje"
+                [style.background]="barra.color"
+              ></div>
+            </div>
+          </li>
+        }
+      </ul>
+
+      <p class="informes__pie">
+        Total analizado: {{ totalMovimientos() }} movimiento(s).
+      </p>
+    }
+  </app-tarjeta>
+</div>

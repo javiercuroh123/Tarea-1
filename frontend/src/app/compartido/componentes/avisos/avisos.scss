@@ -1,0 +1,73 @@
+@use '../../../../estilos/mixins' as m;
+@use '../../../../estilos/variables' as v;
+
+// Capa flotante sobre el resto de la interfaz.
+.avisos {
+  position: fixed;
+  right: var(--esp-6);
+  bottom: var(--esp-6);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-2);
+  // El contenedor no debe capturar clics: solo lo hacen los avisos.
+  pointer-events: none;
+
+  @include m.hasta(v.$punto-movil) {
+    right: var(--esp-3);
+    left: var(--esp-3);
+    bottom: var(--esp-3);
+  }
+}
+
+.aviso {
+  @include m.fila(var(--esp-3));
+
+  min-width: 260px;
+  max-width: 380px;
+  padding: 12px 14px;
+  border-radius: var(--radio-sm);
+  background: var(--color-texto);
+  color: #fff;
+  box-shadow: var(--sombra-lg);
+  pointer-events: auto;   // este sí recibe clics
+  animation: entrar 0.22s ease-out;
+
+  &__texto {
+    flex: 1;
+    font-size: 13.5px;
+    line-height: 1.4;
+  }
+
+  &__cerrar {
+    @include m.boton-limpio;
+    @include m.foco-visible;
+
+    opacity: 0.6;
+    transition: opacity 0.15s ease;
+
+    &:hover {
+      opacity: 1;
+    }
+  }
+
+  // --- Variantes ------------------------------------------------------------
+  &--exito {
+    background: #0b7a58;
+  }
+
+  &--error {
+    background: #b91c1c;
+  }
+}
+
+@keyframes entrar {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

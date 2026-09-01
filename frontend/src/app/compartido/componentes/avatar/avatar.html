@@ -1,0 +1,22 @@
+<!--
+  Si hay imagen se muestra la foto; si no, un círculo de color con las
+  iniciales. `[style.…]` aplica los valores calculados en el componente.
+-->
+<div
+  class="avatar"
+  [class.avatar--con-borde]="conBorde()"
+  [style.width.px]="tamano()"
+  [style.height.px]="tamano()"
+  [style.background]="color()"
+  [style.color]="colorTexto()"
+  [style.font-size.px]="tamanoFuente()"
+  [attr.title]="nombre()"
+>
+  @if (url()) {
+    <img [src]="url()" [alt]="nombre()" loading="lazy" />
+  } @else {
+    <!-- aria-hidden: el nombre ya está en el atributo title y en el texto
+         que acompaña al avatar, no hace falta repetirlo. -->
+    <span aria-hidden="true">{{ textoIniciales() }}</span>
+  }
+</div>

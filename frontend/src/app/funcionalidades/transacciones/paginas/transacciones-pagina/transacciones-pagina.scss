@@ -1,0 +1,48 @@
+@use '../../../../../estilos/mixins' as m;
+@use '../../../../../estilos/variables' as v;
+
+:host {
+  display: block;
+  padding-bottom: var(--esp-4);
+}
+
+.pagina {
+  display: grid;
+  // Columna izquierda de ancho fijo + columna principal que ocupa el resto.
+  grid-template-columns: var(--ancho-columna-izquierda) 1fr;
+  gap: var(--esp-4);
+  align-items: start;
+
+  &__lateral {
+    display: flex;
+    flex-direction: column;
+    gap: var(--esp-4);
+  }
+
+  &__principal {
+    min-width: 0; // permite que la tabla se desplace en lugar de desbordar
+  }
+}
+
+// --- Pantallas medianas: una sola columna -----------------------------------
+@include m.hasta(v.$punto-escritorio) {
+  .pagina {
+    grid-template-columns: 1fr;
+
+    &__lateral {
+      // En horizontal mientras haya sitio.
+      flex-direction: row;
+
+      > * {
+        flex: 1;
+        min-width: 0;
+      }
+    }
+  }
+}
+
+@include m.hasta(v.$punto-tableta) {
+  .pagina__lateral {
+    flex-direction: column;
+  }
+}

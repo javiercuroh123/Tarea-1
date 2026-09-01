@@ -1,0 +1,12 @@
+<div class="metrica">
+  <span class="metrica__icono" [style.color]="color()">
+    <app-icono [nombre]="icono()" [tamano]="18" />
+  </span>
+
+  <p class="metrica__etiqueta">{{ etiqueta() }}</p>
+  <p class="metrica__valor">{{ valor() }}</p>
+
+  @if (detalle()) {
+    <p class="metrica__detalle">{{ detalle() }}</p>
+  }
+</div>

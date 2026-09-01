@@ -1,0 +1,29 @@
+# ============================================================================
+# Archivos que NO deben subirse al repositorio
+# ============================================================================
+
+# --- Dependencias -----------------------------------------------------------
+node_modules/
+
+# --- Compilaciones ----------------------------------------------------------
+dist/
+out-tsc/
+*.tsbuildinfo
+
+# --- Cachés de herramientas -------------------------------------------------
+.angular/
+.vite/
+coverage/
+
+# --- Variables de entorno con secretos ---------------------------------------
+# La clave `anon` es pública y sí está en el código, pero cualquier archivo .env
+# con la clave `service_role` debe quedarse fuera del repositorio.
+.env
+.env.local
+*.local
+
+# --- Sistema operativo y editores -------------------------------------------
+.DS_Store
+Thumbs.db
+*.swp
+.idea/

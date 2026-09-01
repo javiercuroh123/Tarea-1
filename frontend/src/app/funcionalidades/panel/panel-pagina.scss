@@ -1,0 +1,50 @@
+@use '../../../estilos/mixins' as m;
+@use '../../../estilos/variables' as v;
+
+:host {
+  display: block;
+  padding-bottom: var(--esp-4);
+}
+
+.panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+
+  &__saludo {
+    color: var(--color-texto-suave);
+    font-size: 14px;
+  }
+
+  // Cuatro indicadores que se reparten el ancho por igual.
+  &__metricas {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--esp-4);
+  }
+
+  // Gráfico ancho + transferencia estrecha.
+  &__bloques {
+    display: grid;
+    grid-template-columns: 1fr var(--ancho-columna-izquierda);
+    gap: var(--esp-4);
+    align-items: start;
+  }
+}
+
+// --- Adaptación ---------------------------------------------------------------
+@include m.hasta(v.$punto-escritorio) {
+  .panel__metricas {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .panel__bloques {
+    grid-template-columns: 1fr;
+  }
+}
+
+@include m.hasta(v.$punto-movil) {
+  .panel__metricas {
+    grid-template-columns: 1fr;
+  }
+}

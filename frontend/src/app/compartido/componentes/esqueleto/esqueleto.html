@@ -1,0 +1,13 @@
+<!--
+  Barras animadas. aria-hidden porque no aportan información: el estado de
+  carga se comunica con `aria-busy` en el contenedor real.
+-->
+<div class="esqueleto" aria-hidden="true">
+  @for (fila of listaFilas(); track fila) {
+    <div
+      class="esqueleto__barra"
+      [style.height]="alto()"
+      [style.border-radius]="radio()"
+    ></div>
+  }
+</div>

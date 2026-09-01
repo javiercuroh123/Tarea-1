@@ -1,0 +1,35 @@
+@use '../../../../estilos/mixins' as m;
+
+:host {
+  display: inline-block;
+}
+
+.etiqueta {
+  @include m.fila(6px);
+
+  padding: 5px 11px 5px 8px;
+  border-radius: var(--radio-completo);
+  font-size: 12.5px;
+  font-weight: 600;
+  white-space: nowrap;
+
+  &__texto {
+    line-height: 1;
+  }
+
+  // --- Variantes de color -----------------------------------------------
+  &--completada {
+    background: var(--color-exito-fondo);
+    color: var(--color-exito-texto);
+  }
+
+  &--pendiente {
+    background: var(--color-aviso-fondo);
+    color: var(--color-aviso-texto);
+  }
+
+  &--fallida {
+    background: var(--color-error-fondo);
+    color: var(--color-error-texto);
+  }
+}

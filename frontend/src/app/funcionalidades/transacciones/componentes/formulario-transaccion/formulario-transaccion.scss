@@ -1,0 +1,182 @@
+@use '../../../../../estilos/mixins' as m;
+@use '../../../../../estilos/variables' as v;
+
+// Capa oscura que cubre toda la pantalla.
+.fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: rgba(20, 21, 26, 0.35);
+  backdrop-filter: blur(2px);
+  animation: aparecer 0.16s ease-out;
+}
+
+.modal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  z-index: 51;
+  // Centrado exacto sin conocer el tamaño del contenido.
+  transform: translate(-50%, -50%);
+  width: min(460px, calc(100vw - 32px));
+  max-height: calc(100vh - 64px);
+  overflow-y: auto;
+  padding: var(--esp-6);
+  border-radius: var(--radio-lg);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-lg);
+  animation: subir 0.2s ease-out;
+
+  @include m.barra-desplazamiento-fina;
+
+  &__cabecera {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--esp-5);
+  }
+
+  &__titulo {
+    font-size: 19px;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+
+  &__cerrar {
+    @include m.boton-limpio;
+    @include m.centrar;
+    @include m.foco-visible;
+
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radio-xs);
+    color: var(--color-texto-suave);
+
+    &:hover {
+      background: var(--color-superficie-suave);
+    }
+  }
+
+  &__pie {
+    display: flex;
+    gap: var(--esp-2);
+    margin-top: var(--esp-6);
+  }
+}
+
+// --- Formulario --------------------------------------------------------------
+.formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+  min-width: 0;
+
+  &__fila {
+    display: flex;
+    gap: var(--esp-3);
+  }
+
+  &--estrecho {
+    max-width: 110px;
+  }
+
+  &__etiqueta {
+    color: var(--color-texto-suave);
+    font-size: 12px;
+    font-weight: 600;
+  }
+
+  &__error {
+    color: var(--color-error-texto);
+    font-size: 11.5px;
+  }
+
+  input,
+  select {
+    width: 100%;
+    padding: 10px 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-xs);
+    background: var(--color-superficie);
+    font-size: 13.5px;
+
+    &:focus-visible {
+      outline: 2px solid var(--color-violeta);
+      outline-offset: 1px;
+    }
+  }
+}
+
+// --- Botones -----------------------------------------------------------------
+.boton {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  flex: 1;
+  padding: 11px;
+  border-radius: var(--radio-xs);
+  font-size: 13.5px;
+  font-weight: 600;
+  transition: opacity 0.15s ease, background 0.15s ease;
+
+  &--principal {
+    background: var(--color-texto);
+    color: #fff;
+
+    &:hover:not(:disabled) {
+      opacity: 0.88;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &--secundario {
+    background: var(--color-superficie-suave);
+
+    &:hover {
+      background: #eeeef4;
+    }
+  }
+}
+
+// --- Animaciones -------------------------------------------------------------
+@keyframes aparecer {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes subir {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%);
+  }
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+// --- Móvil -------------------------------------------------------------------
+@include m.hasta(v.$punto-movil) {
+  .campo__fila {
+    flex-direction: column;
+  }
+
+  .campo--estrecho {
+    max-width: none;
+  }
+}

@@ -1,0 +1,158 @@
+@use '../../../../../estilos/mixins' as m;
+
+:host {
+  display: block;
+}
+
+// --- Botones de la cabecera --------------------------------------------------
+.acciones {
+  @include m.fila(6px);
+
+  &__boton {
+    @include m.boton-limpio;
+    @include m.centrar;
+    @include m.foco-visible;
+
+    width: 30px;
+    height: 30px;
+    border-radius: var(--radio-xs);
+    color: var(--color-texto-suave);
+    background: var(--color-superficie-suave);
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: var(--color-texto);
+    }
+  }
+}
+
+// --- Cifra destacada ---------------------------------------------------------
+.total {
+  margin-bottom: var(--esp-4);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+
+  &__etiqueta {
+    margin-left: 6px;
+    color: var(--color-texto-suave);
+    font-size: 12px;
+    font-weight: 500;
+  }
+}
+
+.mensaje {
+  padding: var(--esp-8) 0;
+  color: var(--color-texto-suave);
+  font-size: 13px;
+  text-align: center;
+}
+
+// --- Zona del gráfico --------------------------------------------------------
+.grafico {
+  position: relative;
+  height: 180px;
+
+  // Línea horizontal discontinua con la media.
+  &__media {
+    position: absolute;
+    left: 0;
+    right: 0;
+    z-index: 1;
+    height: 1px;
+    border-top: 1px dashed var(--color-texto-tenue);
+    pointer-events: none;
+  }
+
+  &__media-valor {
+    position: absolute;
+    top: -8px;
+    right: 0;
+    padding: 1px 6px;
+    border-radius: var(--radio-xs);
+    background: var(--color-superficie);
+    color: var(--color-texto-suave);
+    font-size: 10.5px;
+    font-weight: 600;
+  }
+}
+
+// --- Barras ------------------------------------------------------------------
+.barras {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+  height: 100%;
+
+  &__hueco {
+    // Cada hueco ocupa la misma fracción del ancho y sirve de carril de fondo.
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    flex: 1;
+    height: 100%;
+    border-radius: var(--radio-completo);
+    background: #f3f0fb;
+  }
+
+  &__barra {
+    @include m.boton-limpio;
+
+    width: 100%;
+    border-radius: var(--radio-completo);
+    background: var(--color-violeta-claro);
+    transition: background 0.15s ease, height 0.3s ease;
+    cursor: pointer;
+
+    &:hover,
+    &--activa {
+      background: var(--color-violeta);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-texto);
+      outline-offset: 2px;
+    }
+  }
+}
+
+// --- Globo informativo -------------------------------------------------------
+.globo {
+  position: absolute;
+  top: -6px;
+  z-index: 3;
+  // `translateX(-50%)` centra el globo sobre la barra.
+  transform: translateX(-50%);
+  padding: 6px 10px;
+  border-radius: var(--radio-xs);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-lg);
+  pointer-events: none;
+  white-space: nowrap;
+
+  &__dia {
+    color: var(--color-texto-suave);
+    font-size: 10.5px;
+    text-transform: capitalize;
+  }
+
+  &__valor {
+    font-size: 13px;
+    font-weight: 700;
+  }
+}
+
+// --- Eje horizontal ----------------------------------------------------------
+.eje {
+  display: flex;
+  gap: 6px;
+  margin-top: var(--esp-2);
+
+  &__etiqueta {
+    flex: 1;
+    color: var(--color-texto-suave);
+    font-size: 11px;
+    text-align: center;
+    text-transform: capitalize;
+  }
+}

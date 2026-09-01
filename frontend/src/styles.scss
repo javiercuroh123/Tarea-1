@@ -1,0 +1,84 @@
+// ============================================================================
+// ESTILOS GLOBALES
+// ----------------------------------------------------------------------------
+// Solo debe contener: variables, normalización del navegador y utilidades
+// realmente globales. Todo lo demás vive en el .scss de cada componente,
+// que Angular encapsula automáticamente.
+// ============================================================================
+
+@use 'estilos/variables' as v;
+@use 'estilos/mixins' as m;
+
+// ----------------------------------------------------------------------------
+// 1. NORMALIZACIÓN
+// ----------------------------------------------------------------------------
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  font-family: var(--fuente);
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--color-texto);
+  background: var(--color-fondo);
+  // Suaviza el texto en pantallas de alta densidad.
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+// Los títulos heredan el peso desde cada componente.
+h1, h2, h3, h4, h5, h6, p, figure {
+  margin: 0;
+}
+
+ul, ol {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+button, input, select, textarea {
+  font: inherit;
+  color: inherit;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+// ----------------------------------------------------------------------------
+// 2. UTILIDADES GLOBALES
+// ----------------------------------------------------------------------------
+
+/// Texto disponible para lectores de pantalla pero invisible en la página.
+.solo-lectores {
+  @include m.solo-lectores-pantalla;
+}
+
+// ----------------------------------------------------------------------------
+// 3. ACCESIBILIDAD: respetar la preferencia de menos movimiento
+// ----------------------------------------------------------------------------
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

@@ -1,0 +1,326 @@
+<app-tarjeta titulo="Historial" [sinRelleno]="true">
+  <!-- ================= Barra de herramientas ================= -->
+  <div acciones class="herramientas">
+    <!-- Buscador desplegable -->
+    <div class="buscador" [class.buscador--abierto]="buscadorAbierto()">
+      @if (buscadorAbierto()) {
+        <input
+          class="buscador__campo"
+          type="search"
+          placeholder="Buscar comercio o concepto…"
+          aria-label="Buscar en el historial"
+          [value]="filtros().busqueda ?? ''"
+          (input)="alEscribirBusqueda($event)"
+        />
+      }
+
+      <button
+        type="button"
+        class="boton-icono"
+        [attr.aria-label]="buscadorAbierto() ? 'Cerrar búsqueda' : 'Buscar'"
+        (click)="alternarBuscador()"
+      >
+        <app-icono [nombre]="buscadorAbierto() ? 'cerrar' : 'buscar'" [tamano]="16" />
+      </button>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filtros-zona">
+      <button
+        type="button"
+        class="boton-texto"
+        [class.boton-texto--activo]="hayFiltrosActivos()"
+        [attr.aria-expanded]="filtrosAbiertos()"
+        (click)="alternarFiltros()"
+      >
+        Filtros
+        <app-icono nombre="filtro" [tamano]="15" />
+      </button>
+
+      @if (filtrosAbiertos()) {
+        <div class="filtros-zona__fondo" (click)="alternarFiltros()"></div>
+        <div class="filtros-zona__panel">
+          <app-filtros-historial
+            [filtrosActuales]="filtros()"
+            (aplicar)="aplicarFiltros($event)"
+            (limpiar)="limpiarFiltros()"
+            (cerrar)="alternarFiltros()"
+          />
+        </div>
+      }
+    </div>
+
+    <!-- Alta de transacción -->
+    <button type="button" class="boton-nuevo" (click)="abrirFormulario()">
+      <app-icono nombre="mas" [tamano]="15" [grosor]="2.2" />
+      Nueva
+    </button>
+  </div>
+
+  <!-- ================= Barra de selección múltiple ================= -->
+  @if (numeroSeleccionadas() > 0) {
+    <div class="seleccion">
+      <span class="seleccion__texto">
+        {{ numeroSeleccionadas() }} seleccionada(s)
+      </span>
+      <button type="button" class="seleccion__accion" (click)="eliminarSeleccionadas()">
+        <app-icono nombre="papelera" [tamano]="14" />
+        Eliminar
+      </button>
+      <button type="button" class="seleccion__cancelar" (click)="limpiarSeleccion()">
+        Cancelar
+      </button>
+    </div>
+  }
+
+  <!-- ================= Contenido ================= -->
+  @switch (estado()) {
+    <!-- ---------- Cargando ---------- -->
+    @case ('cargando') {
+      <div class="carga" aria-busy="true">
+        <app-esqueleto [filas]="6" alto="52px" radio="12px" />
+      </div>
+    }
+
+    <!-- ---------- Error ---------- -->
+    @case ('error') {
+      <app-estado-vacio
+        icono="x-circulo"
+        [esError]="true"
+        titulo="No se pudo cargar el historial"
+        [descripcion]="error() ?? ''"
+        textoAccion="Reintentar"
+        (accion)="reintentar()"
+      />
+    }
+
+    <!-- ---------- Datos ---------- -->
+    @default {
+      @if (transacciones().length === 0) {
+        <app-estado-vacio
+          titulo="No hay transacciones"
+          [descripcion]="
+            hayFiltrosActivos()
+              ? 'Ningún movimiento coincide con los filtros aplicados.'
+              : 'Cuando registres movimientos aparecerán aquí.'
+          "
+          [textoAccion]="hayFiltrosActivos() ? 'Limpiar filtros' : 'Crear la primera'"
+          (accion)="hayFiltrosActivos() ? limpiarFiltros() : abrirFormulario()"
+        />
+      } @else {
+        <div class="tabla-envoltorio">
+          <table class="tabla">
+            <caption class="solo-lectores">
+              Historial de transacciones del usuario
+            </caption>
+
+            <thead>
+              <tr>
+                <th class="tabla__casilla" scope="col">
+                  <input
+                    type="checkbox"
+                    aria-label="Seleccionar todas las filas de esta página"
+                    [checked]="todasSeleccionadas()"
+                    (change)="alternarTodas()"
+                  />
+                </th>
+
+                <!-- Cabeceras ordenables -->
+                <th scope="col">
+                  <button type="button" class="tabla__orden" (click)="ordenar('comercio_nombre')">
+                    Comercio
+                    <app-icono
+                      nombre="orden"
+                      [tamano]="13"
+                      [class.tabla__orden--activo]="esColumnaOrdenada('comercio_nombre')"
+                    />
+                  </button>
+                </th>
+
+                <th scope="col">
+                  <button type="button" class="tabla__orden" (click)="ordenar('fecha')">
+                    Fecha
+                    <app-icono
+                      nombre="orden"
+                      [tamano]="13"
+                      [class.tabla__orden--activo]="esColumnaOrdenada('fecha')"
+                    />
+                  </button>
+                </th>
+
+                <th scope="col">
+                  <button type="button" class="tabla__orden" (click)="ordenar('monto')">
+                    Importe
+                    <app-icono
+                      nombre="orden"
+                      [tamano]="13"
+                      [class.tabla__orden--activo]="esColumnaOrdenada('monto')"
+                    />
+                  </button>
+                </th>
+
+                <th scope="col">Estado</th>
+                <th scope="col"><span class="solo-lectores">Acciones</span></th>
+              </tr>
+            </thead>
+
+            <tbody>
+              @for (fila of transacciones(); track fila.id) {
+                <tr [class.tabla__fila--marcada]="estaSeleccionada(fila.id)">
+                  <!-- Casilla -->
+                  <td class="tabla__casilla">
+                    <input
+                      type="checkbox"
+                      [attr.aria-label]="'Seleccionar ' + fila.comercio_nombre"
+                      [checked]="estaSeleccionada(fila.id)"
+                      (change)="alternarSeleccion(fila.id)"
+                    />
+                  </td>
+
+                  <!-- Comercio -->
+                  <td>
+                    <div class="comercio">
+                      <app-avatar
+                        [nombre]="fila.comercio_nombre"
+                        [url]="fila.comercio_logo_url"
+                        [color]="fila.comercio_color"
+                        [tamano]="38"
+                      />
+                      <div class="comercio__datos">
+                        <p class="comercio__nombre">{{ fila.comercio_nombre }}</p>
+                        <p class="comercio__categoria">
+                          {{ fila.descripcion || fila.comercio_categoria }}
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+
+                  <!-- Fecha -->
+                  <td class="tabla__fecha">{{ fila.fecha | fechaTransaccion }}</td>
+
+                  <!-- Importe -->
+                  <td
+                    class="tabla__importe"
+                    [class.tabla__importe--ingreso]="fila.tipo === 'ingreso'"
+                    [class.tabla__importe--fallido]="fila.estado === 'fallida'"
+                  >
+                    {{ fila.tipo === 'ingreso' ? '+' : '' }}{{
+                      fila.monto | monto: fila.moneda : esNegativo(fila)
+                    }}
+                  </td>
+
+                  <!-- Estado -->
+                  <td>
+                    <app-etiqueta-estado [estado]="fila.estado" />
+                  </td>
+
+                  <!-- Menú de acciones -->
+                  <td class="tabla__acciones">
+                    <button
+                      type="button"
+                      class="boton-icono"
+                      [attr.aria-label]="'Acciones sobre ' + fila.comercio_nombre"
+                      [attr.aria-expanded]="menuAbiertoId() === fila.id"
+                      (click)="alternarMenu(fila.id)"
+                    >
+                      <app-icono nombre="puntos" [tamano]="16" />
+                    </button>
+
+                    @if (menuAbiertoId() === fila.id) {
+                      <div class="menu-fondo" (click)="cerrarMenu()"></div>
+                      <ul class="menu" role="menu">
+                        @if (fila.estado !== 'completada') {
+                          <li>
+                            <button
+                              type="button"
+                              role="menuitem"
+                              (click)="cambiarEstado(fila.id, 'completada')"
+                            >
+                              <app-icono nombre="check-circulo" [tamano]="15" />
+                              Marcar completada
+                            </button>
+                          </li>
+                        }
+                        @if (fila.estado !== 'pendiente') {
+                          <li>
+                            <button
+                              type="button"
+                              role="menuitem"
+                              (click)="cambiarEstado(fila.id, 'pendiente')"
+                            >
+                              <app-icono nombre="reloj" [tamano]="15" />
+                              Marcar pendiente
+                            </button>
+                          </li>
+                        }
+                        @if (fila.estado !== 'fallida') {
+                          <li>
+                            <button
+                              type="button"
+                              role="menuitem"
+                              (click)="cambiarEstado(fila.id, 'fallida')"
+                            >
+                              <app-icono nombre="x-circulo" [tamano]="15" />
+                              Marcar fallida
+                            </button>
+                          </li>
+                        }
+                        <li>
+                          <button
+                            type="button"
+                            role="menuitem"
+                            class="menu__peligro"
+                            (click)="eliminar(fila.id)"
+                          >
+                            <app-icono nombre="papelera" [tamano]="15" />
+                            Eliminar
+                          </button>
+                        </li>
+                      </ul>
+                    }
+                  </td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+
+        <!-- ================= Paginación ================= -->
+        <footer class="paginacion">
+          <p class="paginacion__texto">{{ textoPaginacion() }}</p>
+
+          <div class="paginacion__controles">
+            <button
+              type="button"
+              class="boton-icono"
+              aria-label="Página anterior"
+              [disabled]="pagina() === 1"
+              (click)="irAPagina(pagina() - 1)"
+            >
+              <app-icono nombre="chevron-izquierda" [tamano]="16" />
+            </button>
+
+            <span class="paginacion__indicador">
+              {{ pagina() }} / {{ totalPaginas() }}
+            </span>
+
+            <button
+              type="button"
+              class="boton-icono"
+              aria-label="Página siguiente"
+              [disabled]="pagina() === totalPaginas()"
+              (click)="irAPagina(pagina() + 1)"
+            >
+              <app-icono nombre="chevron-derecha" [tamano]="16" />
+            </button>
+          </div>
+        </footer>
+      }
+    }
+  }
+</app-tarjeta>
+
+<!-- ================= Ventana de nueva transacción ================= -->
+@if (formularioAbierto()) {
+  <app-formulario-transaccion (cerrar)="cerrarFormulario()" />
+}

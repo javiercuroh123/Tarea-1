@@ -1,0 +1,14 @@
+{
+  "name": "payline-backend",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Capa de datos (Supabase/PostgreSQL) del panel Payline: migraciones, semillas y utilidades.",
+  "scripts": {
+    "sql": "node scripts/generar-sql-completo.mjs",
+    "verificar": "node scripts/verificar-conexion.mjs"
+  },
+  "engines": {
+    "node": ">=18"
+  }
+}

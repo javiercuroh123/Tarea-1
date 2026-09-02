@@ -42,5 +42,16 @@
         </a>
       </li>
     }
+    <li>
+      <button
+        type="button"
+        class="barra__boton barra__boton--tenue"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión"
+        (click)="cerrarSesion()"
+      >
+        <app-icono nombre="salir" [tamano]="20" />
+      </button>
+    </li>
   </ul>
 </nav>

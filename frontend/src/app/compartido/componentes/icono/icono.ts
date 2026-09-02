@@ -27,7 +27,10 @@ export type NombreIcono =
   | 'enlace'
   | 'usuario'
   | 'grafico'
-  | 'inbox';
+  | 'inbox'
+  | 'salir'
+  | 'candado'
+  | 'correo';
 
 /**
  * COMPONENTE ICONO

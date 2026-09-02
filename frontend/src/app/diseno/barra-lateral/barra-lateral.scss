@@ -38,6 +38,7 @@
   }
 
   &__boton {
+    @include m.boton-limpio;
     @include m.centrar;
     @include m.foco-visible;
 

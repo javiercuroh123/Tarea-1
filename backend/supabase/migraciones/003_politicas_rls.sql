@@ -37,15 +37,15 @@ alter table public.notificaciones  enable row level security;
 -- ---------------------------------------------------------------------------
 grant usage on schema public to anon, authenticated;
 
-grant select on public.usuarios       to anon, authenticated;
-grant select on public.contactos      to anon, authenticated;
+grant select, insert, update on public.usuarios       to anon, authenticated;
+grant select, insert, update, delete on public.contactos to anon, authenticated;
 grant select on public.comercios      to anon, authenticated;
 grant select on public.tasas_cambio   to anon, authenticated;
 grant select on public.vista_transacciones_detalle to anon, authenticated;
 
 grant select, insert, update, delete on public.transacciones  to anon, authenticated;
 grant select, insert                 on public.transferencias to anon, authenticated;
-grant select, update                 on public.notificaciones to anon, authenticated;
+grant select, insert, update         on public.notificaciones to anon, authenticated;
 
 
 -- ---------------------------------------------------------------------------
@@ -55,13 +55,28 @@ grant select, update                 on public.notificaciones to anon, authentic
 --   with check -> condición que deben cumplir las filas NUEVAS o modificadas
 -- ---------------------------------------------------------------------------
 
--- --- usuarios: solo lectura -------------------------------------------------
+-- --- usuarios: lectura, creación y actualización ----------------------------
 drop policy if exists pol_usuarios_lectura on public.usuarios;
 create policy pol_usuarios_lectura
   on public.usuarios
   for select
   to anon, authenticated
   using (true);
+
+drop policy if exists pol_usuarios_insercion on public.usuarios;
+create policy pol_usuarios_insercion
+  on public.usuarios
+  for insert
+  to anon, authenticated
+  with check (true);
+
+drop policy if exists pol_usuarios_actualizacion on public.usuarios;
+create policy pol_usuarios_actualizacion
+  on public.usuarios
+  for update
+  to anon, authenticated
+  using (true)
+  with check (true);
 
 -- --- comercios: catálogo público de solo lectura ----------------------------
 drop policy if exists pol_comercios_lectura on public.comercios;
@@ -79,11 +94,33 @@ create policy pol_tasas_lectura
   to anon, authenticated
   using (true);
 
--- --- contactos: solo lectura ------------------------------------------------
+-- --- contactos: lectura, creación, edición y borrado ------------------------
 drop policy if exists pol_contactos_lectura on public.contactos;
 create policy pol_contactos_lectura
   on public.contactos
   for select
+  to anon, authenticated
+  using (true);
+
+drop policy if exists pol_contactos_insercion on public.contactos;
+create policy pol_contactos_insercion
+  on public.contactos
+  for insert
+  to anon, authenticated
+  with check (true);
+
+drop policy if exists pol_contactos_actualizacion on public.contactos;
+create policy pol_contactos_actualizacion
+  on public.contactos
+  for update
+  to anon, authenticated
+  using (true)
+  with check (true);
+
+drop policy if exists pol_contactos_borrado on public.contactos;
+create policy pol_contactos_borrado
+  on public.contactos
+  for delete
   to anon, authenticated
   using (true);
 
@@ -132,13 +169,20 @@ create policy pol_transferencias_insercion
   to anon, authenticated
   with check (monto_origen > 0);   -- validación mínima también en la BD
 
--- --- notificaciones: leer y marcar como leídas ------------------------------
+-- --- notificaciones: leer, crear y marcar como leídas -----------------------
 drop policy if exists pol_notificaciones_lectura on public.notificaciones;
 create policy pol_notificaciones_lectura
   on public.notificaciones
   for select
   to anon, authenticated
   using (true);
+
+drop policy if exists pol_notificaciones_insercion on public.notificaciones;
+create policy pol_notificaciones_insercion
+  on public.notificaciones
+  for insert
+  to anon, authenticated
+  with check (true);
 
 drop policy if exists pol_notificaciones_actualizacion on public.notificaciones;
 create policy pol_notificaciones_actualizacion

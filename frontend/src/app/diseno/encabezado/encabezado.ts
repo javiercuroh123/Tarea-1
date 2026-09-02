@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/cor
 import { toSignal } from '@angular/core/rxjs-interop';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, map, startWith } from 'rxjs';
-import { NotificacionesServicio, UsuariosServicio } from '../../nucleo/servicios';
+import { AutenticacionServicio, NotificacionesServicio, UsuariosServicio } from '../../nucleo/servicios';
 import { Avatar, Icono } from '../../compartido';
 
 /**
@@ -26,6 +26,7 @@ export class Encabezado {
   private readonly router = inject(Router);
   private readonly notificacionesServicio = inject(NotificacionesServicio);
   private readonly usuariosServicio = inject(UsuariosServicio);
+  private readonly auth = inject(AutenticacionServicio);
 
   /** Usuario mostrado a la derecha. */
   readonly usuario = this.usuariosServicio.usuario;
@@ -72,6 +73,11 @@ export class Encabezado {
   /** Marca todo como leído y cierra. */
   async marcarLeidas(): Promise<void> {
     await this.notificacionesServicio.marcarTodasLeidas();
+  }
+
+  /** Cierra la sesión activa y navega al login. */
+  async cerrarSesion(): Promise<void> {
+    await this.auth.cerrarSesion();
   }
 
   /**

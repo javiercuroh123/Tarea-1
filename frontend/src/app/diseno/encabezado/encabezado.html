@@ -65,6 +65,16 @@
           <p class="usuario__nombre">{{ datosUsuario.nombre_completo }}</p>
           <p class="usuario__rol">{{ datosUsuario.rol }}</p>
         </div>
+
+        <button
+          type="button"
+          class="usuario__salir"
+          aria-label="Cerrar sesión"
+          title="Cerrar sesión"
+          (click)="cerrarSesion()"
+        >
+          <app-icono nombre="salir" [tamano]="16" />
+        </button>
       </div>
     } @else {
       <!-- Marcador de posición mientras se carga el usuario. -->

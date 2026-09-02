@@ -55,6 +55,27 @@
         font-weight: 600;
       }
     }
+
+    // Botón agregar nuevo contacto
+    &--agregar {
+      .contactos__circulo-mas {
+        @include m.centrar;
+
+        width: 52px;
+        height: 52px;
+        border-radius: 50%;
+        border: 2px dashed var(--color-violeta-claro);
+        background: var(--color-violeta-suave);
+        color: var(--color-violeta);
+        transition: all 0.15s ease;
+      }
+
+      &:hover .contactos__circulo-mas {
+        border-color: var(--color-violeta);
+        background: #e2d9fe;
+        transform: scale(1.05);
+      }
+    }
   }
 
   &__nombre {
@@ -68,6 +89,34 @@
   &__vacio {
     color: var(--color-texto-suave);
     font-size: 13px;
+    margin: 0;
+  }
+
+  &__vacio-bloque {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--esp-2) var(--esp-3);
+    margin-bottom: var(--esp-4);
+    border-radius: var(--radio-sm);
+    background: var(--color-superficie-suave);
+    border: 1px dashed var(--color-borde);
+  }
+
+  &__enlace-agregar {
+    @include m.boton-limpio;
+    @include m.foco-visible;
+
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-violeta);
+
+    &:hover {
+      text-decoration: underline;
+    }
   }
 }
 
@@ -269,5 +318,302 @@
 
   &--desactivado {
     opacity: 0.65;
+  }
+}
+
+// ============================================================================
+// Modal Nuevo Destinatario
+// ============================================================================
+.modal-fondo {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: var(--esp-4);
+  background: rgba(20, 21, 26, 0.45);
+  backdrop-filter: blur(4px);
+  animation: modalAparecer 0.2s ease;
+}
+
+@keyframes modalAparecer {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+.modal-tarjeta {
+  width: 100%;
+  max-width: 460px;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--color-superficie);
+  border-radius: var(--radio-lg);
+  box-shadow: var(--sombra-lg);
+  padding: var(--esp-6);
+  border: 1px solid var(--color-borde);
+}
+
+.modal-cabecera {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: var(--esp-4);
+}
+
+.modal-titulo {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--color-texto);
+  margin: 0;
+}
+
+.modal-subtitulo {
+  font-size: 12.5px;
+  color: var(--color-texto-suave);
+  margin: 2px 0 0;
+}
+
+.modal-cerrar {
+  @include m.boton-limpio;
+  @include m.centrar;
+  @include m.foco-visible;
+
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  color: var(--color-texto-suave);
+
+  &:hover {
+    background: var(--color-superficie-suave);
+    color: var(--color-texto);
+  }
+}
+
+.modal-tabs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  background: var(--color-superficie-suave);
+  border-radius: var(--radio-sm);
+  margin-bottom: var(--esp-4);
+}
+
+.modal-tab {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  padding: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--color-texto-suave);
+  border-radius: var(--radio-xs);
+  transition: all 0.15s ease;
+
+  &--activo {
+    background: var(--color-superficie);
+    color: var(--color-texto);
+    box-shadow: var(--sombra-sm);
+  }
+}
+
+.modal-alerta {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  padding: 10px 12px;
+  border-radius: var(--radio-xs);
+  background: var(--color-error-fondo);
+  color: var(--color-error-texto);
+  font-size: 12.5px;
+  margin-bottom: var(--esp-4);
+}
+
+.modal-lista-usuarios {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-2);
+  max-height: 260px;
+  overflow-y: auto;
+}
+
+.usuario-fila {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  padding: 10px 12px;
+  border-radius: var(--radio-sm);
+  background: var(--color-superficie-suave);
+  transition: background 0.15s ease;
+
+  &:hover {
+    background: #f0f0f5;
+  }
+
+  &__info {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__nombre {
+    @include m.texto-truncado;
+
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--color-texto);
+    margin: 0;
+  }
+
+  &__correo {
+    @include m.texto-truncado;
+
+    font-size: 12px;
+    color: var(--color-texto-suave);
+    margin: 1px 0 0;
+  }
+
+  &__boton {
+    @include m.boton-limpio;
+    @include m.foco-visible;
+
+    padding: 6px 14px;
+    border-radius: var(--radio-completo);
+    background: var(--color-violeta);
+    color: #fff;
+    font-size: 12px;
+    font-weight: 600;
+    transition: all 0.15s ease;
+
+    &:hover:not(:disabled) {
+      background: #6d28d9;
+      transform: scale(1.03);
+    }
+  }
+}
+
+.modal-cargando {
+  text-align: center;
+  padding: var(--esp-4);
+  color: var(--color-texto-suave);
+  font-size: 13px;
+}
+
+.modal-vacio {
+  text-align: center;
+  padding: var(--esp-6) var(--esp-2);
+  color: var(--color-texto-suave);
+  font-size: 13px;
+
+  p {
+    margin-bottom: var(--esp-3);
+  }
+}
+
+.modal-boton-secundario {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  color: var(--color-violeta);
+  font-weight: 600;
+  font-size: 13px;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+.modal-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-3);
+}
+
+.modal-campo {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+
+  &__etiqueta {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--color-texto);
+  }
+
+  &__input,
+  &__select {
+    width: 100%;
+    height: 42px;
+    padding: 0 12px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-xs);
+    background: var(--color-superficie-suave);
+    font-size: 13.5px;
+    color: var(--color-texto);
+    transition: all 0.15s ease;
+
+    &:focus {
+      outline: none;
+      background: var(--color-superficie);
+      border-color: var(--color-violeta);
+      box-shadow: 0 0 0 2px var(--color-violeta-suave);
+    }
+  }
+
+  &__ayuda {
+    font-size: 11.5px;
+    color: var(--color-texto-suave);
+    line-height: 1.3;
+  }
+}
+
+.modal-acciones {
+  display: flex;
+  justify-content: flex-end;
+  gap: var(--esp-2);
+  margin-top: var(--esp-4);
+}
+
+.modal-boton-cancelar {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  padding: 10px 16px;
+  border-radius: var(--radio-xs);
+  color: var(--color-texto-suave);
+  font-size: 13px;
+  font-weight: 600;
+
+  &:hover {
+    background: var(--color-superficie-suave);
+    color: var(--color-texto);
+  }
+}
+
+.modal-boton-guardar {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  padding: 10px 20px;
+  border-radius: var(--radio-xs);
+  background: var(--color-texto);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: #252830;
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
   }
 }

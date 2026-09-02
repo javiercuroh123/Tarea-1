@@ -169,6 +169,24 @@
     letter-spacing: 0.06em;
   }
 
+  &__salir {
+    @include m.boton-limpio;
+    @include m.centrar;
+    @include m.foco-visible;
+
+    width: 28px;
+    height: 28px;
+    margin-left: 6px;
+    border-radius: 50%;
+    color: var(--color-texto-suave);
+    transition: all 0.15s ease;
+
+    &:hover {
+      background: var(--color-error-fondo);
+      color: var(--color-error);
+    }
+  }
+
   // --- Marcador de posición durante la carga -------------------------------
   &--cargando {
     padding: 5px 18px 5px 5px;

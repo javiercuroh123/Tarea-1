@@ -8,7 +8,6 @@
 
 .pagina {
   display: grid;
-  // Columna izquierda de ancho fijo + columna principal que ocupa el resto.
   grid-template-columns: var(--ancho-columna-izquierda) 1fr;
   gap: var(--esp-4);
   align-items: start;
@@ -20,17 +19,15 @@
   }
 
   &__principal {
-    min-width: 0; // permite que la tabla se desplace en lugar de desbordar
+    min-width: 0;
   }
 }
 
-// --- Pantallas medianas: una sola columna -----------------------------------
 @include m.hasta(v.$punto-escritorio) {
   .pagina {
     grid-template-columns: 1fr;
 
     &__lateral {
-      // En horizontal mientras haya sitio.
       flex-direction: row;
 
       > * {

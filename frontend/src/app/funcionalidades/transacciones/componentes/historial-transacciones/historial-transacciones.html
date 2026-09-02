@@ -1,7 +1,5 @@
 <app-tarjeta titulo="Historial" [sinRelleno]="true">
-  <!-- ================= Barra de herramientas ================= -->
   <div acciones class="herramientas">
-    <!-- Buscador desplegable -->
     <div class="buscador" [class.buscador--abierto]="buscadorAbierto()">
       @if (buscadorAbierto()) {
         <input
@@ -24,7 +22,6 @@
       </button>
     </div>
 
-    <!-- Filtros -->
     <div class="filtros-zona">
       <button
         type="button"
@@ -50,14 +47,12 @@
       }
     </div>
 
-    <!-- Alta de transacción -->
     <button type="button" class="boton-nuevo" (click)="abrirFormulario()">
       <app-icono nombre="mas" [tamano]="15" [grosor]="2.2" />
       Nueva
     </button>
   </div>
 
-  <!-- ================= Barra de selección múltiple ================= -->
   @if (numeroSeleccionadas() > 0) {
     <div class="seleccion">
       <span class="seleccion__texto">
@@ -73,16 +68,13 @@
     </div>
   }
 
-  <!-- ================= Contenido ================= -->
   @switch (estado()) {
-    <!-- ---------- Cargando ---------- -->
     @case ('cargando') {
       <div class="carga" aria-busy="true">
         <app-esqueleto [filas]="6" alto="52px" radio="12px" />
       </div>
     }
 
-    <!-- ---------- Error ---------- -->
     @case ('error') {
       <app-estado-vacio
         icono="x-circulo"
@@ -94,7 +86,6 @@
       />
     }
 
-    <!-- ---------- Datos ---------- -->
     @default {
       @if (transacciones().length === 0) {
         <app-estado-vacio
@@ -125,7 +116,6 @@
                   />
                 </th>
 
-                <!-- Cabeceras ordenables -->
                 <th scope="col">
                   <button type="button" class="tabla__orden" (click)="ordenar('comercio_nombre')">
                     Comercio
@@ -167,7 +157,6 @@
             <tbody>
               @for (fila of transacciones(); track fila.id) {
                 <tr [class.tabla__fila--marcada]="estaSeleccionada(fila.id)">
-                  <!-- Casilla -->
                   <td class="tabla__casilla">
                     <input
                       type="checkbox"
@@ -177,7 +166,6 @@
                     />
                   </td>
 
-                  <!-- Comercio -->
                   <td>
                     <div class="comercio">
                       <app-avatar
@@ -195,10 +183,8 @@
                     </div>
                   </td>
 
-                  <!-- Fecha -->
                   <td class="tabla__fecha">{{ fila.fecha | fechaTransaccion }}</td>
 
-                  <!-- Importe -->
                   <td
                     class="tabla__importe"
                     [class.tabla__importe--ingreso]="fila.tipo === 'ingreso'"
@@ -209,12 +195,10 @@
                     }}
                   </td>
 
-                  <!-- Estado -->
                   <td>
                     <app-etiqueta-estado [estado]="fila.estado" />
                   </td>
 
-                  <!-- Menú de acciones -->
                   <td class="tabla__acciones">
                     <button
                       type="button"
@@ -285,7 +269,6 @@
           </table>
         </div>
 
-        <!-- ================= Paginación ================= -->
         <footer class="paginacion">
           <p class="paginacion__texto">{{ textoPaginacion() }}</p>
 
@@ -320,7 +303,6 @@
   }
 </app-tarjeta>
 
-<!-- ================= Ventana de nueva transacción ================= -->
 @if (formularioAbierto()) {
   <app-formulario-transaccion (cerrar)="cerrarFormulario()" />
 }

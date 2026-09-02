@@ -6,24 +6,11 @@ import { mensajeDeError, registrarError } from '../utilidades/errores.util';
 import { SupabaseServicio } from './supabase.servicio';
 import { AutenticacionServicio } from './autenticacion.servicio';
 
-/**
- * SERVICIO DE USUARIOS
- * -----------------------------------------------------------------------------
- * Responsable de:
- *   - Cargar el usuario que se muestra en el encabezado.
- *   - Cargar el resumen de métricas (RPC `fn_resumen_usuario`).
- *
- * Patrón usado en todos los servicios de dominio del proyecto:
- *   señal privada `_x` (escritura)  ->  señal pública `x` (solo lectura)
- * De este modo el estado solo se modifica desde el servicio y los componentes
- * nunca pueden corromperlo.
- */
 @Injectable({ providedIn: 'root' })
 export class UsuariosServicio {
   private readonly supabase = inject(SupabaseServicio);
   private readonly auth = inject(AutenticacionServicio);
 
-  // --- Estado ----------------------------------------------------------------
   private readonly _usuario = signal<Usuario | null>(null);
   private readonly _resumen = signal<ResumenUsuario | null>(null);
   private readonly _estado = signal<EstadoCarga>('inactivo');
@@ -34,19 +21,13 @@ export class UsuariosServicio {
   readonly estado = this._estado.asReadonly();
   readonly error = this._error.asReadonly();
 
-  /** `computed` deriva un valor de otras señales y se recalcula solo. */
   readonly cargando = computed(() => this._estado() === 'cargando');
 
-  /**
-   * Id del usuario activo.
-   * Proviene de la sesión de Supabase Auth o del modo demo.
-   */
   get usuarioActivoId(): string {
     return this.auth.usuarioActivoId() ?? environment.usuarioDemoId;
   }
 
   constructor() {
-    // Cuando cambie el usuario autenticado, recargamos sus datos
     effect(() => {
       const id = this.auth.usuarioActivoId();
       if (id) {
@@ -58,10 +39,6 @@ export class UsuariosServicio {
     });
   }
 
-  /**
-   * Carga el usuario y su resumen. Las dos peticiones van EN PARALELO con
-   * `Promise.all` porque no dependen entre sí: así tarda lo que la más lenta.
-   */
   async cargar(): Promise<void> {
     this._estado.set('cargando');
     this._error.set(null);
@@ -76,7 +53,6 @@ export class UsuariosServicio {
     }
   }
 
-  /** Vuelve a pedir solo el resumen (tras crear o borrar una transacción). */
   async refrescarResumen(): Promise<void> {
     try {
       await this.cargarResumen();
@@ -85,9 +61,6 @@ export class UsuariosServicio {
     }
   }
 
-  // --- Métodos privados ------------------------------------------------------
-
-  /** Trae la fila del usuario activo. */
   private async cargarUsuario(): Promise<void> {
     const id = this.usuarioActivoId;
     if (!id) {
@@ -142,10 +115,6 @@ export class UsuariosServicio {
     this._usuario.set(data as Usuario);
   }
 
-  /**
-   * Llama a la RPC del resumen y convierte los `numeric` (que llegan como
-   * cadenas de texto) a números de JavaScript.
-   */
   private async cargarResumen(): Promise<void> {
     const { data, error } = await this.supabase.funcion<ResumenUsuarioCrudo[]>(
       'fn_resumen_usuario',
@@ -156,7 +125,6 @@ export class UsuariosServicio {
       throw error;
     }
 
-    // La función devuelve una tabla; nos interesa su única fila.
     const fila = data?.[0];
     if (!fila) {
       this._resumen.set(null);

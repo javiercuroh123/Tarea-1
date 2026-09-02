@@ -2,7 +2,6 @@
 
 :host {
   display: block;
-  // Permite que la tarjeta se estire dentro de una rejilla o columna flex.
   height: 100%;
 }
 
@@ -22,7 +21,6 @@
     }
   }
 
-  // --- Cabecera -------------------------------------------------------------
   &__cabecera {
     display: flex;
     align-items: center;
@@ -34,7 +32,7 @@
   &__titulo-zona {
     @include m.fila(var(--esp-2));
 
-    min-width: 0; // permite que el título se trunque
+    min-width: 0;
   }
 
   &__titulo {
@@ -51,7 +49,6 @@
     flex-shrink: 0;
   }
 
-  // --- Asa de arrastre: dos columnas de tres puntitos -----------------------
   &__asa {
     display: grid;
     grid-template-columns: repeat(2, 3px);
@@ -65,9 +62,8 @@
     }
   }
 
-  // --- Cuerpo ---------------------------------------------------------------
   &__cuerpo {
     flex: 1;
-    min-height: 0; // imprescindible para que un hijo con scroll funcione
+    min-height: 0;
   }
 }

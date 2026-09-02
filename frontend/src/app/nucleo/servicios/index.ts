@@ -1,9 +1,3 @@
-/**
- * PUNTO DE ENTRADA ÚNICO DE LOS SERVICIOS (patrón «barrel»).
- *
- *     import { TransaccionesServicio, AvisosServicio } from '../../nucleo/servicios';
- */
-
 export * from './supabase.servicio';
 export * from './autenticacion.servicio';
 export * from './usuarios.servicio';

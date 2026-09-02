@@ -6,16 +6,6 @@ import {
   iniciales,
 } from './formato.util';
 
-/**
- * PRUEBAS DE LAS UTILIDADES DE FORMATO
- * -----------------------------------------------------------------------------
- * Son funciones PURAS: para probarlas no hace falta montar componentes ni
- * simular Supabase. Ese es precisamente el motivo de haberlas separado de los
- * componentes.
- *
- * Ejecutar con:  npm test
- */
-
 describe('formatearMonto', () => {
   it('añade el símbolo de la moneda y dos decimales', () => {
     expect(formatearMonto(1500, 'USD')).toBe('$1,500.00');
@@ -30,8 +20,6 @@ describe('formatearMonto', () => {
   });
 
   it('nunca muestra un negativo doble', () => {
-    // El importe llega positivo desde la base de datos, pero si por error
-    // llegara negativo, el resultado sigue teniendo un solo signo.
     expect(formatearMonto(-150, 'USD', true)).toBe('-$150.00');
   });
 });

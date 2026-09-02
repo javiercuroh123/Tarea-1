@@ -1,12 +1,10 @@
 <app-tarjeta titulo="Transferencia rápida" [conAsa]="true">
-  <!-- Botón secundario de la cabecera: despliega la lista completa. -->
   @if (hayMasContactos()) {
     <button acciones type="button" class="enlace-todos" (click)="verTodos()">
       {{ textoVerTodos() }}
     </button>
   }
 
-  <!-- ============ Fila de contactos ============ -->
   @if (estadoContactos() === 'cargando') {
     <app-esqueleto [filas]="1" alto="70px" radio="16px" />
   } @else {
@@ -31,7 +29,6 @@
         </li>
       }
 
-      <!-- Botón para añadir nuevo contacto -->
       <li>
         <button
           type="button"
@@ -59,7 +56,6 @@
     }
   }
 
-  <!-- ============ Importe de origen ============ -->
   <div class="linea">
     <span class="linea__icono linea__icono--origen">
       <app-icono nombre="usuario" [tamano]="13" [grosor]="2" />
@@ -84,11 +80,6 @@
 
     <div class="importe__moneda">
       <label class="solo-lectores" for="moneda-origen">Moneda de origen</label>
-      <!--
-        `[selected]` va en cada <option> y no `[value]` en el <select>: las
-        opciones se crean con @for DESPUÉS de que se evalúe el <select>, así
-        que un [value] en el padre no encontraría todavía la opción.
-      -->
       <select id="moneda-origen" (change)="cambiarMonedaOrigen($event)">
         @for (moneda of monedas; track moneda) {
           <option [value]="moneda" [selected]="moneda === monedaOrigen()">{{ moneda }}</option>
@@ -98,7 +89,6 @@
     </div>
   </div>
 
-  <!-- ============ Tasa de cambio ============ -->
   <div class="tasa">
     <button
       type="button"
@@ -113,7 +103,6 @@
     <span class="tasa__linea" aria-hidden="true"></span>
   </div>
 
-  <!-- ============ Importe de destino ============ -->
   <div class="linea">
     @if (contactoSeleccionado(); as contacto) {
       <app-avatar
@@ -129,7 +118,6 @@
   </div>
 
   <div class="importe">
-    <!-- Solo lectura: este importe lo calcula la tasa de cambio. -->
     <output class="importe__campo importe__campo--calculado">
       {{ montoDestinoFormateado() }}
     </output>
@@ -145,7 +133,6 @@
     </div>
   </div>
 
-  <!-- ============ Deslizante de envío ============ -->
   <div
     #pista
     class="deslizante"
@@ -154,12 +141,6 @@
     (pointerup)="soltarArrastre()"
     (pointercancel)="soltarArrastre()"
   >
-    <!--
-      Es un <button> real: con el teclado se activa con Intro o Espacio, sin
-      necesidad de arrastrar. La posición se calcula con `calc()`: el progreso
-      (0 a 1) multiplica el recorrido disponible (ancho de la pista menos el
-      tirador y sus márgenes).
-    -->
     <button
       type="button"
       class="deslizante__tirador"
@@ -182,7 +163,6 @@
   </div>
 </app-tarjeta>
 
-<!-- ============ Modal de Nuevo Destinatario ============ -->
 @if (modalContactoAbierto()) {
   <div class="modal-fondo" (click)="cerrarModalContacto()">
     <div
@@ -206,7 +186,6 @@
         </button>
       </header>
 
-      <!-- Selector de pestañas -->
       <nav class="modal-tabs" aria-label="Modo de agregar contacto">
         <button
           type="button"

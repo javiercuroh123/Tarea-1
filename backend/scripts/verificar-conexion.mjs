@@ -1,30 +1,13 @@
-/**
- * SCRIPT: verificar-conexion.mjs
- * -----------------------------------------------------------------------------
- * Comprueba que la base de datos de Supabase está correctamente instalada:
- *   1. Que el proyecto responde.
- *   2. Que existen todas las tablas y la vista.
- *   3. Cuántas filas tiene cada una.
- *   4. Que las funciones RPC responden.
- *
- * Uso:  node scripts/verificar-conexion.mjs     (desde la carpeta backend/)
- *       npm run verificar
- *
- * No necesita dependencias: usa el `fetch` nativo de Node 18+.
- */
-
 import { configuracionSupabase } from '../config/supabase.config.mjs';
 
 const { url, claveAnonima, usuarioDemoId } = configuracionSupabase;
 
-/** Cabeceras obligatorias en toda llamada a la API REST de Supabase. */
 const cabeceras = {
   apikey: claveAnonima,
   Authorization: `Bearer ${claveAnonima}`,
   'Content-Type': 'application/json',
 };
 
-/** Tablas y vistas que deberían existir tras ejecutar las migraciones. */
 const RECURSOS = [
   'usuarios',
   'contactos',
@@ -36,15 +19,10 @@ const RECURSOS = [
   'vista_transacciones_detalle',
 ];
 
-/** Colores ANSI para que el resultado se lea cómodo en la terminal. */
 const verde = (t) => `\x1b[32m${t}\x1b[0m`;
 const rojo = (t) => `\x1b[31m${t}\x1b[0m`;
 const gris = (t) => `\x1b[90m${t}\x1b[0m`;
 
-/**
- * Cuenta las filas de una tabla usando la cabecera Prefer: count=exact,
- * que hace que PostgREST devuelva el total en Content-Range.
- */
 async function contarFilas(recurso) {
   const respuesta = await fetch(`${url}/rest/v1/${recurso}?select=id&limit=1`, {
     headers: { ...cabeceras, Prefer: 'count=exact' },
@@ -55,13 +33,11 @@ async function contarFilas(recurso) {
     return { ok: false, mensaje: detalle.message ?? `HTTP ${respuesta.status}` };
   }
 
-  // Content-Range llega con el formato "0-0/25"; el total va tras la barra.
   const rango = respuesta.headers.get('content-range') ?? '';
   const total = rango.split('/')[1] ?? '?';
   return { ok: true, total };
 }
 
-/** Llama a una función RPC y devuelve su resultado. */
 async function llamarRpc(nombre, cuerpo) {
   const respuesta = await fetch(`${url}/rest/v1/rpc/${nombre}`, {
     method: 'POST',
@@ -85,7 +61,6 @@ async function principal() {
 
   let errores = 0;
 
-  // --- 1. Tablas y vistas --------------------------------------------------
   console.log('Tablas y vistas');
   console.log(gris('-----------------------------------------'));
 
@@ -101,7 +76,6 @@ async function principal() {
     }
   }
 
-  // --- 2. Funciones RPC ----------------------------------------------------
   console.log('\nFunciones RPC');
   console.log(gris('-----------------------------------------'));
 
@@ -125,7 +99,6 @@ async function principal() {
     console.log(`  ${rojo('FALLA')} fn_resumen_usuario............ ${rojo(resumen.mensaje)}`);
   }
 
-  // --- 3. Conclusión -------------------------------------------------------
   console.log('\n=========================================');
   if (errores === 0) {
     console.log(verde('  TODO CORRECTO: la base de datos está lista.'));
@@ -139,7 +112,6 @@ async function principal() {
   }
   console.log('=========================================\n');
 
-  // Código de salida distinto de 0 para poder usarlo en integración continua.
   process.exit(errores === 0 ? 0 : 1);
 }
 

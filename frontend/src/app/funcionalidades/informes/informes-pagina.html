@@ -1,5 +1,4 @@
 <div class="informes">
-  <!-- ---------- Indicadores ---------- -->
   <div class="informes__metricas">
     <app-metrica etiqueta="Ingresos totales" [valor]="ingresos()" icono="check-circulo" color="#067a55" />
     <app-metrica etiqueta="Gastos totales" [valor]="egresos()" icono="grafico" color="#7c3aed" />
@@ -7,7 +6,6 @@
     <app-metrica etiqueta="Importe medio" [valor]="importeMedio()" icono="orden" color="#96620a" />
   </div>
 
-  <!-- ---------- Distribución por estado ---------- -->
   <app-tarjeta titulo="Distribución por estado">
     @if (cargando()) {
       <app-esqueleto [filas]="3" alto="34px" />
@@ -24,10 +22,6 @@
               </span>
             </div>
 
-            <!--
-              role="meter" con sus valores: un lector de pantalla anuncia el
-              porcentaje aunque no vea la barra.
-            -->
             <div
               class="reparto__pista"
               role="meter"

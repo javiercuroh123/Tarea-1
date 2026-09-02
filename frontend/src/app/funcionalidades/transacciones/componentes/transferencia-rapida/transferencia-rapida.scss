@@ -4,7 +4,6 @@
   display: block;
 }
 
-// --- Botón «Ver todos» de la cabecera ---------------------------------------
 .enlace-todos {
   @include m.boton-limpio;
   @include m.foco-visible;
@@ -18,7 +17,6 @@
   }
 }
 
-// --- Fila de contactos -------------------------------------------------------
 .contactos {
   display: flex;
   flex-wrap: wrap;
@@ -43,7 +41,6 @@
       background: var(--color-superficie-suave);
     }
 
-    // Contacto elegido: anillo violeta alrededor del avatar.
     &--activo {
       app-avatar {
         border-radius: 50%;
@@ -56,7 +53,6 @@
       }
     }
 
-    // Botón agregar nuevo contacto
     &--agregar {
       .contactos__circulo-mas {
         @include m.centrar;
@@ -120,7 +116,6 @@
   }
 }
 
-// --- Línea «De / Para» -------------------------------------------------------
 .linea {
   @include m.fila(var(--esp-2));
 
@@ -154,7 +149,6 @@
   }
 }
 
-// --- Campo de importe --------------------------------------------------------
 .importe {
   display: flex;
   align-items: center;
@@ -176,7 +170,6 @@
       outline: none;
     }
 
-    // Oculta las flechitas del input numérico: no encajan con el diseño.
     &::-webkit-outer-spin-button,
     &::-webkit-inner-spin-button {
       appearance: none;
@@ -185,7 +178,6 @@
 
     appearance: textfield;
 
-    // El importe convertido no es editable: se distingue en un gris suave.
     &--calculado {
       color: var(--color-texto);
     }
@@ -222,7 +214,6 @@
   }
 }
 
-// --- Tasa de cambio ----------------------------------------------------------
 .tasa {
   @include m.fila(var(--esp-3));
 
@@ -255,7 +246,6 @@
     white-space: nowrap;
   }
 
-  // Línea de puntos que completa el ancho, como en el diseño.
   &__linea {
     flex: 1;
     height: 1px;
@@ -267,7 +257,6 @@
   }
 }
 
-// --- Deslizante «Arrastra para enviar» ---------------------------------------
 .deslizante {
   position: relative;
   display: flex;
@@ -275,8 +264,6 @@
   height: 56px;
   border-radius: var(--radio-completo);
   background: var(--color-superficie-suave);
-  // `touch-action: none` impide que el navegador interprete el arrastre como
-  // desplazamiento de la página en pantallas táctiles.
   touch-action: none;
   user-select: none;
 
@@ -295,8 +282,6 @@
     background: var(--color-texto);
     color: #fff;
     cursor: grab;
-    // Sin transición mientras se arrastra sería brusco; con ella el retorno
-    // al soltar se ve suave.
     transition: left 0.18s ease, background 0.15s ease;
 
     &:active {
@@ -310,7 +295,6 @@
   }
 
   &__texto {
-    // Deja hueco al tirador y centra el texto en el resto de la pista.
     padding-left: 68px;
     color: var(--color-texto-suave);
     font-size: 13.5px;
@@ -321,9 +305,6 @@
   }
 }
 
-// ============================================================================
-// Modal Nuevo Destinatario
-// ============================================================================
 .modal-fondo {
   position: fixed;
   inset: 0;

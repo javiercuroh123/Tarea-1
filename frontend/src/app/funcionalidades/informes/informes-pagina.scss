@@ -31,7 +31,6 @@
   }
 }
 
-// --- Barras de reparto -------------------------------------------------------
 .reparto {
   display: flex;
   flex-direction: column;
@@ -67,7 +66,6 @@
   }
 }
 
-// --- Adaptación ---------------------------------------------------------------
 @include m.hasta(v.$punto-escritorio) {
   .informes__metricas {
     grid-template-columns: repeat(2, 1fr);

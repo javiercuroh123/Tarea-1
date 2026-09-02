@@ -10,14 +10,6 @@ import { AutenticacionServicio, AvisosServicio } from '../../../../nucleo/servic
 import { mensajeDeError } from '../../../../nucleo/utilidades/errores.util';
 import { Icono } from '../../../../compartido';
 
-/**
- * PÁGINA DE LOGIN Y REGISTRO
- * -----------------------------------------------------------------------------
- * Permite:
- *   1. Iniciar sesión con email y contraseña (Supabase Auth).
- *   2. Registrar una nueva cuenta de usuario.
- *   3. Acceso rápido con 1 clic en Modo Demostración (William Grace).
- */
 @Component({
   selector: 'app-login-pagina',
   imports: [FormsModule, Icono],
@@ -30,7 +22,6 @@ export class LoginPagina {
   private readonly router = inject(Router);
   private readonly avisos = inject(AvisosServicio);
 
-  // --- Estado ---
   readonly modo = signal<'login' | 'registro'>('login');
   readonly nombreCompleto = signal('');
   readonly correo = signal('');
@@ -39,14 +30,12 @@ export class LoginPagina {
   readonly errorMensaje = signal<string | null>(null);
   readonly infoMensaje = signal<string | null>(null);
 
-  /** Cambia entre pestaña de login y registro. */
   cambiarModo(nuevoModo: 'login' | 'registro'): void {
     this.modo.set(nuevoModo);
     this.errorMensaje.set(null);
     this.infoMensaje.set(null);
   }
 
-  /** Procesa el envío del formulario según el modo activo. */
   async onSubmit(evento: Event): Promise<void> {
     evento.preventDefault();
     this.errorMensaje.set(null);
@@ -97,7 +86,6 @@ export class LoginPagina {
     }
   }
 
-  /** Acceso inmediato en Modo Demostración sin credenciales. */
   async entrarComoDemo(): Promise<void> {
     this.auth.iniciarSesionDemo();
     this.avisos.info('Iniciando sesión como William Grace (Demo)...');

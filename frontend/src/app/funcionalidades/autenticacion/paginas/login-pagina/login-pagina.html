@@ -1,6 +1,5 @@
 <main class="login-pantalla">
   <div class="login-tarjeta">
-    <!-- Logotipo y Cabecera -->
     <header class="login-cabecera">
       <div class="login-logo" aria-hidden="true">
         <svg viewBox="0 0 32 32" width="34" height="34">
@@ -15,7 +14,6 @@
       <p class="login-subtitulo">Panel financiero y transferencias en tiempo real</p>
     </header>
 
-    <!-- Selector de modo (Pestañas) -->
     <nav class="login-pestanas" aria-label="Modo de autenticación">
       <button
         type="button"
@@ -35,7 +33,6 @@
       </button>
     </nav>
 
-    <!-- Avisos de error e información -->
     @if (errorMensaje()) {
       <div class="login-alerta login-alerta--error" role="alert">
         <app-icono nombre="x-circulo" [tamano]="18" />
@@ -50,7 +47,6 @@
       </div>
     }
 
-    <!-- Formulario principal -->
     <form class="login-formulario" (submit)="onSubmit($event)">
       @if (modo() === 'registro') {
         <div class="campo">
@@ -116,14 +112,12 @@
       </button>
     </form>
 
-    <!-- Separador -->
     <div class="login-divisor">
       <span class="login-divisor__linea"></span>
       <span class="login-divisor__texto">o accede al instante</span>
       <span class="login-divisor__linea"></span>
     </div>
 
-    <!-- Botón de Modo Demostración -->
     <button type="button" class="boton-demo" (click)="entrarComoDemo()">
       <div class="boton-demo__avatar">WG</div>
       <div class="boton-demo__info">
@@ -133,7 +127,6 @@
       <app-icono nombre="chevron-derecha" [tamano]="16" />
     </button>
 
-    <!-- Pie informativo -->
     <footer class="login-pie">
       <p>Conexión segura mediante <strong>Supabase</strong> & <strong>PostgreSQL</strong></p>
     </footer>

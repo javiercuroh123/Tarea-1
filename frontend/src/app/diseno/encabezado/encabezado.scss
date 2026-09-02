@@ -23,9 +23,6 @@
   }
 }
 
-// ---------------------------------------------------------------------------
-// Campana y su desplegable
-// ---------------------------------------------------------------------------
 .campana {
   position: relative;
 
@@ -58,7 +55,6 @@
     box-shadow: 0 0 0 2px var(--color-superficie);
   }
 
-  // Capa transparente a pantalla completa para detectar el clic exterior.
   &__fondo {
     position: fixed;
     inset: 0;
@@ -114,7 +110,6 @@
     border-radius: var(--radio-xs);
     background: var(--color-superficie-suave);
 
-    // Las no leídas llevan una barra violeta a la izquierda.
     &--nueva {
       border-left: 3px solid var(--color-violeta);
     }
@@ -140,9 +135,6 @@
   }
 }
 
-// ---------------------------------------------------------------------------
-// Ficha del usuario
-// ---------------------------------------------------------------------------
 .usuario {
   @include m.fila(10px);
 
@@ -187,7 +179,6 @@
     }
   }
 
-  // --- Marcador de posición durante la carga -------------------------------
   &--cargando {
     padding: 5px 18px 5px 5px;
   }
@@ -207,15 +198,11 @@
   }
 }
 
-// ---------------------------------------------------------------------------
-// Adaptación a pantallas pequeñas
-// ---------------------------------------------------------------------------
 @include m.hasta(v.$punto-movil) {
   .encabezado__titulo {
     font-size: 24px;
   }
 
-  // En móvil el nombre ocuparía demasiado: dejamos solo el avatar.
   .usuario__datos {
     display: none;
   }

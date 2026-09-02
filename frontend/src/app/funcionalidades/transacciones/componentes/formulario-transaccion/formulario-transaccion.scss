@@ -1,7 +1,6 @@
 @use '../../../../../estilos/mixins' as m;
 @use '../../../../../estilos/variables' as v;
 
-// Capa oscura que cubre toda la pantalla.
 .fondo {
   position: fixed;
   inset: 0;
@@ -16,7 +15,6 @@
   top: 50%;
   left: 50%;
   z-index: 51;
-  // Centrado exacto sin conocer el tamaño del contenido.
   transform: translate(-50%, -50%);
   width: min(460px, calc(100vw - 32px));
   max-height: calc(100vh - 64px);
@@ -64,7 +62,6 @@
   }
 }
 
-// --- Formulario --------------------------------------------------------------
 .formulario {
   display: flex;
   flex-direction: column;
@@ -114,7 +111,6 @@
   }
 }
 
-// --- Botones -----------------------------------------------------------------
 .boton {
   @include m.boton-limpio;
   @include m.foco-visible;
@@ -149,7 +145,6 @@
   }
 }
 
-// --- Animaciones -------------------------------------------------------------
 @keyframes aparecer {
   from {
     opacity: 0;
@@ -170,7 +165,6 @@
   }
 }
 
-// --- Móvil -------------------------------------------------------------------
 @include m.hasta(v.$punto-movil) {
   .campo__fila {
     flex-direction: column;

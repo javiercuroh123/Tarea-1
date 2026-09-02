@@ -4,11 +4,6 @@ import { registrarError } from '../utilidades/errores.util';
 import { SupabaseServicio } from './supabase.servicio';
 import { UsuariosServicio } from './usuarios.servicio';
 
-/**
- * SERVICIO DE NOTIFICACIONES
- * -----------------------------------------------------------------------------
- * Alimenta la campana del encabezado: lista de avisos y contador de no leídas.
- */
 @Injectable({ providedIn: 'root' })
 export class NotificacionesServicio {
   private readonly supabase = inject(SupabaseServicio);
@@ -17,12 +12,10 @@ export class NotificacionesServicio {
   private readonly _notificaciones = signal<Notificacion[]>([]);
   readonly notificaciones = this._notificaciones.asReadonly();
 
-  /** Número de avisos sin leer: es lo que muestra el punto rojo. */
   readonly sinLeer = computed(
     () => this._notificaciones().filter((n) => !n.leida).length,
   );
 
-  /** Trae las notificaciones más recientes del usuario activo. */
   async cargar(): Promise<void> {
     try {
       const { data, error } = await this.supabase
@@ -30,7 +23,7 @@ export class NotificacionesServicio {
         .select('*')
         .eq('usuario_id', this.usuarios.usuarioActivoId)
         .order('creado_en', { ascending: false })
-        .limit(10);   // la campana no necesita más
+        .limit(10);
 
       if (error) {
         throw error;
@@ -42,13 +35,6 @@ export class NotificacionesServicio {
     }
   }
 
-  /**
-   * Marca todas como leídas.
-   *
-   * Actualiza PRIMERO la interfaz y luego el servidor («actualización
-   * optimista»): la campana responde al instante. Si el servidor falla,
-   * recargamos para volver al estado real.
-   */
   async marcarTodasLeidas(): Promise<void> {
     const anteriores = this._notificaciones();
 
@@ -68,7 +54,6 @@ export class NotificacionesServicio {
       }
     } catch (error) {
       registrarError('NotificacionesServicio.marcarTodasLeidas', error);
-      // Deshacemos el cambio optimista.
       this._notificaciones.set(anteriores);
     }
   }

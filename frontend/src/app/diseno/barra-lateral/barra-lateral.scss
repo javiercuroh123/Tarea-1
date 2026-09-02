@@ -31,7 +31,6 @@
     flex-direction: column;
     gap: var(--esp-2);
 
-    // La lista inferior se empuja al fondo con el margen automático.
     &--inferior {
       margin-top: auto;
     }
@@ -52,7 +51,6 @@
       background: var(--color-superficie-suave);
     }
 
-    // Opción seleccionada: círculo lima, como en el diseño.
     &--activo {
       background: var(--color-lima);
       color: var(--color-texto);
@@ -68,7 +66,6 @@
   }
 }
 
-// --- Versión móvil: la barra pasa a ser horizontal, arriba del contenido -----
 @include m.hasta(v.$punto-tableta) {
   .barra {
     flex-direction: row;

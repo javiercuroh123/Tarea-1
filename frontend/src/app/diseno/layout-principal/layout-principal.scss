@@ -13,7 +13,6 @@
   padding: var(--esp-4);
 
   &__barra {
-    // La barra lateral mantiene su ancho fijo.
     flex-shrink: 0;
   }
 
@@ -21,7 +20,6 @@
     display: flex;
     flex-direction: column;
     flex: 1;
-    // `min-width: 0` evita que un hijo ancho (la tabla) desborde el flex.
     min-width: 0;
     padding-left: var(--esp-2);
   }
@@ -32,7 +30,6 @@
   }
 }
 
-// --- Tableta y móvil: la barra pasa arriba y todo se apila ------------------
 @include m.hasta(v.$punto-tableta) {
   .disposicion {
     flex-direction: column;

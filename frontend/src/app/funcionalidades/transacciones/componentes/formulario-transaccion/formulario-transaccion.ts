@@ -9,19 +9,6 @@ import {
 import { CodigoMoneda, EstadoTransaccion, TipoTransaccion } from '../../../../nucleo/modelos';
 import { Icono } from '../../../../compartido';
 
-/**
- * FORMULARIO DE NUEVA TRANSACCIÓN
- * -----------------------------------------------------------------------------
- * Ventana modal para dar de alta un movimiento a mano.
- *
- * Usa FORMULARIOS REACTIVOS (`ReactiveFormsModule`) en lugar de `ngModel`:
- *   - las validaciones se declaran en un único sitio,
- *   - el estado del formulario (válido, tocado, con errores) es consultable,
- *   - es la opción recomendada por Angular para formularios con reglas.
- *
- * La validación del navegador NO sustituye a la de la base de datos: las
- * restricciones `check` del SQL siguen siendo la última palabra.
- */
 @Component({
   selector: 'app-formulario-transaccion',
   imports: [ReactiveFormsModule, Icono],
@@ -36,13 +23,10 @@ export class FormularioTransaccion implements OnInit {
   private readonly usuarios = inject(UsuariosServicio);
   private readonly avisos = inject(AvisosServicio);
 
-  /** Se emite cuando hay que cerrar la ventana. */
   readonly cerrar = output<void>();
 
-  /** Catálogo para el desplegable de comercios. */
   readonly comercios = this.comerciosServicio.comercios;
 
-  /** true mientras se está guardando. */
   readonly guardando = signal(false);
 
   readonly monedas: readonly CodigoMoneda[] = ['USD', 'EUR', 'GBP', 'PEN'];
@@ -56,10 +40,6 @@ export class FormularioTransaccion implements OnInit {
     { valor: 'fallida', texto: 'Fallida' },
   ];
 
-  /**
-   * Definición del formulario con sus validaciones.
-   * `nonNullable: true` evita que los campos vuelvan a null al reiniciarlos.
-   */
   readonly formulario = this.fb.nonNullable.group({
     comercio_id: ['', Validators.required],
     monto: [0, [Validators.required, Validators.min(0.01)]],
@@ -67,7 +47,6 @@ export class FormularioTransaccion implements OnInit {
     tipo: ['egreso' as TipoTransaccion, Validators.required],
     estado: ['completada' as EstadoTransaccion, Validators.required],
     descripcion: ['', [Validators.maxLength(120)]],
-    // Por defecto, la fecha de hoy en formato yyyy-mm-dd.
     fecha: [new Date().toISOString().slice(0, 10), Validators.required],
   });
 
@@ -75,16 +54,12 @@ export class FormularioTransaccion implements OnInit {
     void this.comerciosServicio.cargar();
   }
 
-  /** Atajo para consultar si un campo debe mostrar su error. */
   tieneError(campo: string): boolean {
     const control = this.formulario.get(campo);
     return Boolean(control && control.invalid && (control.dirty || control.touched));
   }
 
-  /** Guarda la transacción. */
   async guardar(): Promise<void> {
-    // Si el formulario no es válido, marcamos todo como «tocado» para que se
-    // vean los mensajes de error y salimos.
     if (this.formulario.invalid) {
       this.formulario.markAllAsTouched();
       return;
@@ -102,7 +77,6 @@ export class FormularioTransaccion implements OnInit {
         tipo: valores.tipo,
         estado: valores.estado,
         descripcion: valores.descripcion.trim() || null,
-        // Añadimos una hora para guardar una marca de tiempo completa.
         fecha: `${valores.fecha}T12:00:00`,
       });
 

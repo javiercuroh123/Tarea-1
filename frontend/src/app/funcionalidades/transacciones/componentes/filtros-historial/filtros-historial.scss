@@ -45,7 +45,6 @@
   }
 }
 
-// --- Bloques del formulario --------------------------------------------------
 .grupo {
   margin: 0 0 var(--esp-4);
   padding: 0;
@@ -74,7 +73,6 @@
   }
 }
 
-// --- Pastillas de selección --------------------------------------------------
 .pastilla {
   @include m.boton-limpio;
   @include m.foco-visible;
@@ -101,7 +99,6 @@
   }
 }
 
-// --- Campos de fecha ---------------------------------------------------------
 .campo {
   display: flex;
   flex-direction: column;
@@ -126,7 +123,6 @@
   }
 }
 
-// --- Botones del pie ---------------------------------------------------------
 .boton {
   @include m.boton-limpio;
   @include m.foco-visible;

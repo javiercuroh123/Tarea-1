@@ -29,10 +29,8 @@ class NumberedCanvas(canvas.Canvas):
 
     def draw_page_decorations(self, total_pages):
         self.saveState()
-        
-        # Omitir en la portada
+
         if self._pageNumber > 1:
-            # Encabezado superior
             self.setFont("Helvetica", 8)
             self.setFillColor(colors.HexColor("#64748B"))
             self.drawString(40, 755, "PAYLINE — Cuestionario Técnico de Arquitectura, Código y Base de Datos")
@@ -41,14 +39,13 @@ class NumberedCanvas(canvas.Canvas):
             self.setLineWidth(0.5)
             self.line(40, 748, 572, 748)
 
-            # Pie de página
             self.line(40, 42, 572, 42)
             self.setFont("Helvetica", 8)
             self.setFillColor(colors.HexColor("#64748B"))
             self.drawString(40, 30, "Documento de Referencia Técnica y Arquitectura de Software")
             page_text = f"Página {self._pageNumber} de {total_pages}"
             self.drawRightString(572, 30, page_text)
-            
+
         self.restoreState()
 
 def build_pdf(filename):
@@ -63,7 +60,6 @@ def build_pdf(filename):
 
     styles = getSampleStyleSheet()
 
-    # Estilos tipográficos
     title_style = ParagraphStyle(
         'CoverTitle',
         parent=styles['Normal'],
@@ -141,12 +137,8 @@ def build_pdf(filename):
 
     story = []
 
-    # =========================================================================
-    # PORTADA
-    # =========================================================================
     story.append(Spacer(1, 35))
-    
-    # Badge superior
+
     badge_p = Paragraph("<font color='#4F46E5'><b>INFORME TÉCNICO COMPLETO DE ARQUITECTURA Y CÓDIGO</b></font>", ParagraphStyle('B', alignment=1, fontSize=9, leading=12))
     story.append(badge_p)
     story.append(Spacer(1, 10))
@@ -168,7 +160,6 @@ def build_pdf(filename):
     story.append(Paragraph(summary_text, ParagraphStyle('Summ', parent=styles['Normal'], fontSize=9.5, leading=13.5, textColor=colors.HexColor("#334155"), alignment=4)))
     story.append(Spacer(1, 20))
 
-    # Tabla resumen de módulos
     modulos_data = [
         [Paragraph("<b>Módulo</b>", ParagraphStyle('M0', fontName='Helvetica-Bold', fontSize=8.5, textColor=colors.HexColor("#1E293B"))),
          Paragraph("<b>Temática Central</b>", ParagraphStyle('M1', fontName='Helvetica-Bold', fontSize=8.5, textColor=colors.HexColor("#1E293B"))),
@@ -182,7 +173,7 @@ def build_pdf(filename):
         [Paragraph("Módulo 7", styles['Normal']), Paragraph("UI/UX, Gestos Táctiles, Tokens SCSS y Accesibilidad", styles['Normal']), Paragraph("5 (50 - 54)", styles['Normal'])],
         [Paragraph("Módulo 8", styles['Normal']), Paragraph("Depuración, Resolución de Problemas y Buenas Prácticas", styles['Normal']), Paragraph("4 (55 - 58)", styles['Normal'])],
     ]
-    
+
     t_modulos = Table(modulos_data, colWidths=[75, 340, 95])
     t_modulos.setStyle(TableStyle([
         ('BACKGROUND', (0, 0), (-1, 0), colors.HexColor("#EEF2FF")),
@@ -206,9 +197,6 @@ def build_pdf(filename):
     story.append(Paragraph(meta_content, meta_style))
     story.append(PageBreak())
 
-    # =========================================================================
-    # BANCO DE PREGUNTAS Y RESPUESTAS (58 PREGUNTAS)
-    # =========================================================================
     preguntas_por_modulo = [
         {
             "modulo": "MÓDULO 1: VISIÓN GENERAL Y ARQUITECTURA DEL PROYECTO",
@@ -549,7 +537,6 @@ def build_pdf(filename):
     total_preguntas = 0
 
     for mod in preguntas_por_modulo:
-        # Encabezado del módulo
         header_table_data = [
             [Paragraph(f"<b>{mod['modulo']}</b>", sec_title_style)],
             [Paragraph(mod['desc'], sec_desc_style)]
@@ -563,7 +550,7 @@ def build_pdf(filename):
             ('RIGHTPADDING', (0, 0), (-1, -1), 10),
             ('CORNERPAD', (0, 0), (-1, -1), 4),
         ]))
-        
+
         story.append(Spacer(1, 10))
         story.append(t_header)
         story.append(Spacer(1, 10))
@@ -572,15 +559,14 @@ def build_pdf(filename):
             total_preguntas += 1
             p_limpia = limpiar_texto(pregunta)
             r_limpia = limpiar_texto(respuesta)
-            
-            # Formatear pregunta y respuesta en una tarjeta limpia
+
             card_data = [
                 [Paragraph(f"<b>PREGUNTA {total_preguntas}</b>", q_badge_style)],
                 [Paragraph(p_limpia, q_text_style)],
                 [HRFlowable(width="100%", thickness=0.5, color=colors.HexColor("#E2E8F0"), spaceAfter=5, spaceBefore=4)],
                 [Paragraph(f"<b>Respuesta:</b> {r_limpia}", ans_style)]
             ]
-            
+
             t_card = Table(card_data, colWidths=[532])
             t_card.setStyle(TableStyle([
                 ('BACKGROUND', (0, 0), (-1, -1), colors.HexColor("#F8FAFC")),
@@ -594,7 +580,6 @@ def build_pdf(filename):
 
             story.append(KeepTogether([t_card, Spacer(1, 7)]))
 
-    # Construir el documento
     doc.build(story, canvasmaker=NumberedCanvas)
     print(f"PDF generado con éxito: {filename} (Total preguntas: {total_preguntas})")
 

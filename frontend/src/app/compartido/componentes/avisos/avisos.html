@@ -1,7 +1,3 @@
-<!--
-  role="status" + aria-live="polite": los lectores de pantalla anuncian el
-  mensaje cuando aparece, sin interrumpir lo que se estuviera leyendo.
--->
 <div class="avisos" role="status" aria-live="polite">
   @for (aviso of avisos(); track aviso.id) {
     <div class="aviso" [class]="'aviso aviso--' + aviso.tipo">

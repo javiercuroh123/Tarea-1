@@ -1,17 +1,6 @@
-// ============================================================================
-// ESTILOS GLOBALES
-// ----------------------------------------------------------------------------
-// Solo debe contener: variables, normalización del navegador y utilidades
-// realmente globales. Todo lo demás vive en el .scss de cada componente,
-// que Angular encapsula automáticamente.
-// ============================================================================
-
 @use 'estilos/variables' as v;
 @use 'estilos/mixins' as m;
 
-// ----------------------------------------------------------------------------
-// 1. NORMALIZACIÓN
-// ----------------------------------------------------------------------------
 *,
 *::before,
 *::after {
@@ -30,12 +19,10 @@ body {
   line-height: 1.5;
   color: var(--color-texto);
   background: var(--color-fondo);
-  // Suaviza el texto en pantallas de alta densidad.
   -webkit-font-smoothing: antialiased;
   text-rendering: optimizeLegibility;
 }
 
-// Los títulos heredan el peso desde cada componente.
 h1, h2, h3, h4, h5, h6, p, figure {
   margin: 0;
 }
@@ -61,18 +48,10 @@ a {
   text-decoration: none;
 }
 
-// ----------------------------------------------------------------------------
-// 2. UTILIDADES GLOBALES
-// ----------------------------------------------------------------------------
-
-/// Texto disponible para lectores de pantalla pero invisible en la página.
 .solo-lectores {
   @include m.solo-lectores-pantalla;
 }
 
-// ----------------------------------------------------------------------------
-// 3. ACCESIBILIDAD: respetar la preferencia de menos movimiento
-// ----------------------------------------------------------------------------
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

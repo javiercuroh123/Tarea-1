@@ -1,5 +1,4 @@
 <nav class="barra" aria-label="Navegación principal">
-  <!-- Logotipo: líneas onduladas, como en el diseño de referencia. -->
   <a routerLink="/panel" class="barra__logo" aria-label="Payline, ir al panel">
     <svg viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
       <g fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
@@ -10,7 +9,6 @@
     </svg>
   </a>
 
-  <!-- Opciones principales -->
   <ul class="barra__lista">
     @for (opcion of opciones; track opcion.ruta) {
       <li>
@@ -27,7 +25,6 @@
     }
   </ul>
 
-  <!-- Opciones secundarias, ancladas abajo -->
   <ul class="barra__lista barra__lista--inferior">
     @for (opcion of opcionesInferiores; track opcion.ruta) {
       <li>

@@ -2,23 +2,7 @@ import { Routes } from '@angular/router';
 import { LayoutPrincipal } from './diseno/layout-principal/layout-principal';
 import { autenticacionGuard, publicoGuard } from './nucleo/guardas/autenticacion.guard';
 
-/**
- * TABLA DE RUTAS DE LA APLICACIÓN
- * -----------------------------------------------------------------------------
- * Todas las pantallas cuelgan del `LayoutPrincipal` (barra lateral +
- * encabezado), así que se declaran como rutas HIJAS suyas.
- *
- * Dos ideas importantes:
- *
- * 1. CARGA PEREZOSA (`loadComponent`): el código de cada página se descarga solo
- *    cuando se visita. El arranque de la aplicación es más rápido porque el
- *    paquete inicial es pequeño.
- *
- * 2. `data.titulo`: cada ruta declara el texto que el encabezado mostrará como
- *    <h1>. El componente `Encabezado` lo lee de la ruta activa.
- */
 export const routes: Routes = [
-  // --- Pantalla de inicio de sesión / registro ------------------------------
   {
     path: 'login',
     title: 'Iniciar sesión · Payline',
@@ -34,14 +18,12 @@ export const routes: Routes = [
     component: LayoutPrincipal,
     canActivate: [autenticacionGuard],
     children: [
-      // --- Redirección inicial ------------------------------------------------
       {
         path: '',
         redirectTo: 'transacciones',
         pathMatch: 'full',
       },
 
-      // --- Panel --------------------------------------------------------------
       {
         path: 'panel',
         title: 'Panel · Payline',
@@ -50,7 +32,6 @@ export const routes: Routes = [
           import('./funcionalidades/panel/panel-pagina').then((m) => m.PanelPagina),
       },
 
-      // --- Transacciones (pantalla principal del diseño) ----------------------
       {
         path: 'transacciones',
         title: 'Transacciones · Payline',
@@ -61,7 +42,6 @@ export const routes: Routes = [
           ).then((m) => m.TransaccionesPagina),
       },
 
-      // --- Informes -----------------------------------------------------------
       {
         path: 'informes',
         title: 'Informes · Payline',
@@ -70,7 +50,6 @@ export const routes: Routes = [
           import('./funcionalidades/informes/informes-pagina').then((m) => m.InformesPagina),
       },
 
-      // --- Ajustes (pantalla informativa) -------------------------------------
       {
         path: 'ajustes',
         title: 'Ajustes · Payline',
@@ -87,7 +66,6 @@ export const routes: Routes = [
           ),
       },
 
-      // --- Ayuda --------------------------------------------------------------
       {
         path: 'ayuda',
         title: 'Ayuda · Payline',
@@ -104,8 +82,6 @@ export const routes: Routes = [
           ),
       },
 
-      // --- Ruta comodín: cualquier URL desconocida -----------------------------
-      // Debe ir SIEMPRE la última: Angular evalúa las rutas en orden.
       {
         path: '**',
         title: 'Página no encontrada · Payline',

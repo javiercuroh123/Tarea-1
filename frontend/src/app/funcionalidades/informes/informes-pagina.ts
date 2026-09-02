@@ -3,7 +3,6 @@ import { UsuariosServicio } from '../../nucleo/servicios';
 import { Esqueleto, Metrica, Tarjeta } from '../../compartido';
 import { formatearMonto } from '../../nucleo/utilidades/formato.util';
 
-/** Una barra de la distribución por estado. */
 interface BarraEstado {
   etiqueta: string;
   cantidad: number;
@@ -11,16 +10,6 @@ interface BarraEstado {
   color: string;
 }
 
-/**
- * PÁGINA DE INFORMES
- * -----------------------------------------------------------------------------
- * Resumen analítico a partir de la RPC `fn_resumen_usuario`: indicadores
- * principales y reparto de los movimientos por estado.
- *
- * Los cálculos que se ven aquí (porcentajes) se hacen en el navegador porque
- * parten de cuatro números que ya vienen agregados del servidor. La regla que
- * seguimos: AGREGAR en la base de datos, PRESENTAR en el navegador.
- */
 @Component({
   selector: 'app-informes-pagina',
   imports: [Metrica, Tarjeta, Esqueleto],
@@ -34,13 +23,11 @@ export class InformesPagina {
   readonly resumen = this.usuarios.resumen;
   readonly cargando = this.usuarios.cargando;
 
-  /** Total de movimientos, base para los porcentajes. */
   readonly totalMovimientos = computed(() => {
     const r = this.resumen();
     return r ? r.numCompletadas + r.numPendientes + r.numFallidas : 0;
   });
 
-  /** Barras de la distribución por estado. */
   readonly distribucion = computed<BarraEstado[]>(() => {
     const r = this.resumen();
     const total = this.totalMovimientos();
@@ -63,7 +50,6 @@ export class InformesPagina {
     ];
   });
 
-  /** Tasa de éxito: completadas sobre el total. */
   readonly tasaExito = computed(() => {
     const r = this.resumen();
     const total = this.totalMovimientos();
@@ -73,7 +59,6 @@ export class InformesPagina {
     return `${Math.round((r.numCompletadas / total) * 100)} %`;
   });
 
-  /** Importe medio por movimiento completado. */
   readonly importeMedio = computed(() => {
     const r = this.resumen();
     if (!r || r.numCompletadas === 0) {

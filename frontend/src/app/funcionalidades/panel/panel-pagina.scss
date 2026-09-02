@@ -16,14 +16,12 @@
     font-size: 14px;
   }
 
-  // Cuatro indicadores que se reparten el ancho por igual.
   &__metricas {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
     gap: var(--esp-4);
   }
 
-  // Gráfico ancho + transferencia estrecha.
   &__bloques {
     display: grid;
     grid-template-columns: 1fr var(--ancho-columna-izquierda);
@@ -32,7 +30,6 @@
   }
 }
 
-// --- Adaptación ---------------------------------------------------------------
 @include m.hasta(v.$punto-escritorio) {
   .panel__metricas {
     grid-template-columns: repeat(2, 1fr);

@@ -1,10 +1,5 @@
-<!-- Fondo oscurecido: al pulsarlo se cierra la ventana. -->
 <div class="fondo" (click)="cerrar.emit()"></div>
 
-<!--
-  role="dialog" + aria-modal: los lectores de pantalla anuncian que se ha
-  abierto una ventana y que el resto de la página queda en segundo plano.
--->
 <div class="modal" role="dialog" aria-modal="true" aria-labelledby="titulo-modal">
   <header class="modal__cabecera">
     <h2 id="titulo-modal" class="modal__titulo">Nueva transacción</h2>
@@ -14,7 +9,6 @@
   </header>
 
   <form class="formulario" [formGroup]="formulario" (ngSubmit)="guardar()">
-    <!-- ---------- Comercio ---------- -->
     <label class="campo">
       <span class="campo__etiqueta">Comercio</span>
       <select formControlName="comercio_id">
@@ -28,7 +22,6 @@
       }
     </label>
 
-    <!-- ---------- Importe y moneda ---------- -->
     <div class="campo__fila">
       <label class="campo">
         <span class="campo__etiqueta">Importe</span>
@@ -48,7 +41,6 @@
       </label>
     </div>
 
-    <!-- ---------- Tipo y estado ---------- -->
     <div class="campo__fila">
       <label class="campo">
         <span class="campo__etiqueta">Tipo</span>
@@ -69,13 +61,11 @@
       </label>
     </div>
 
-    <!-- ---------- Fecha ---------- -->
     <label class="campo">
       <span class="campo__etiqueta">Fecha</span>
       <input type="date" formControlName="fecha" />
     </label>
 
-    <!-- ---------- Descripción ---------- -->
     <label class="campo">
       <span class="campo__etiqueta">Descripción (opcional)</span>
       <input type="text" maxlength="120" formControlName="descripcion" placeholder="Concepto…" />
@@ -84,7 +74,6 @@
       }
     </label>
 
-    <!-- ---------- Botones ---------- -->
     <footer class="modal__pie">
       <button type="button" class="boton boton--secundario" (click)="cerrar.emit()">
         Cancelar

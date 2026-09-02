@@ -1,15 +1,4 @@
-/**
- * ENTORNO DE DESARROLLO
- * -----------------------------------------------------------------------------
- * Este archivo REEMPLAZA a `environment.ts` cuando se ejecuta `ng serve`
- * (configuración `development` de angular.json).
- *
- * Mantiene las mismas claves porque el proyecto de Supabase es el mismo;
- * si algún día hubiera un proyecto de pruebas independiente, se cambiarían
- * aquí sin tocar el código de la aplicación.
- */
 export const environment = {
-  /** En desarrollo mostramos trazas y no optimizamos. */
   produccion: false,
 
   supabaseUrl: 'https://oxehjzkhikhvuedyooih.supabase.co',

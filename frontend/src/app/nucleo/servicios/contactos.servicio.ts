@@ -4,12 +4,6 @@ import { mensajeDeError, registrarError } from '../utilidades/errores.util';
 import { SupabaseServicio } from './supabase.servicio';
 import { UsuariosServicio } from './usuarios.servicio';
 
-/**
- * SERVICIO DE CONTACTOS
- * -----------------------------------------------------------------------------
- * Lista los destinatarios frecuentes que se ven como avatares en el widget
- * «Transferencia rápida».
- */
 @Injectable({ providedIn: 'root' })
 export class ContactosServicio {
   private readonly supabase = inject(SupabaseServicio);
@@ -23,12 +17,6 @@ export class ContactosServicio {
   readonly estado = this._estado.asReadonly();
   readonly error = this._error.asReadonly();
 
-  /**
-   * Carga los contactos del usuario activo.
-   * El orden (favoritos primero, luego alfabético) coincide con el índice
-   * `idx_contactos_usuario` de la base de datos, así que PostgreSQL lo resuelve
-   * sin ordenar nada en memoria.
-   */
   async cargar(): Promise<void> {
     this._estado.set('cargando');
     this._error.set(null);
@@ -54,15 +42,10 @@ export class ContactosServicio {
     }
   }
 
-  /** Busca un contacto ya cargado por su id (sin volver al servidor). */
   porId(id: string): Contacto | undefined {
     return this._contactos().find((contacto) => contacto.id === id);
   }
 
-  /**
-   * Obtiene la lista de otros usuarios registrados en Payline para sugerirlos
-   * como posibles contactos.
-   */
   async obtenerUsuariosRegistrados(): Promise<import('../modelos').Usuario[]> {
     try {
       const { data, error } = await this.supabase
@@ -82,9 +65,6 @@ export class ContactosServicio {
     }
   }
 
-  /**
-   * Crea un nuevo contacto asociado al usuario activo.
-   */
   async crear(datos: {
     nombre: string;
     correo?: string;
@@ -113,7 +93,6 @@ export class ContactosServicio {
       }
 
       const creado = data as Contacto;
-      // Actualizamos la señal de contactos
       this._contactos.update((actuales) => [creado, ...actuales]);
       return creado;
     } catch (error) {

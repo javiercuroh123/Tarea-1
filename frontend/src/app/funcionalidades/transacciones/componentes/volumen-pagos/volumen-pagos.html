@@ -9,17 +9,14 @@
   </div>
 
   @switch (estado()) {
-    <!-- ---------- Cargando ---------- -->
     @case ('cargando') {
       <app-esqueleto [filas]="1" alto="180px" radio="16px" />
     }
 
-    <!-- ---------- Error ---------- -->
     @case ('error') {
       <p class="mensaje">No se pudo cargar el gráfico.</p>
     }
 
-    <!-- ---------- Datos ---------- -->
     @default {
       <p class="total">
         {{ formatear(totalPeriodo()) }}
@@ -27,7 +24,6 @@
       </p>
 
       <div class="grafico">
-        <!-- Línea discontinua con la media del periodo. -->
         @if (maximo() > 0) {
           <div
             class="grafico__media"
@@ -38,7 +34,6 @@
           </div>
         }
 
-        <!-- Globo informativo de la barra activa. -->
         @if (puntoActivo(); as punto) {
           <div class="globo" [style.left.%]="((indiceActivo() ?? 0) + 0.5) * (100 / puntos().length)">
             <p class="globo__dia">{{ punto.etiquetaLarga }}</p>
@@ -46,14 +41,9 @@
           </div>
         }
 
-        <!-- Barras -->
         <ul class="barras">
           @for (punto of puntos(); track punto.fecha.getTime(); let i = $index) {
             <li class="barras__hueco">
-              <!--
-                Cada barra es un botón: recibe el foco con el tabulador y su
-                aria-label describe el dato completo para lectores de pantalla.
-              -->
               <button
                 type="button"
                 class="barras__barra"
@@ -70,7 +60,6 @@
         </ul>
       </div>
 
-      <!-- Eje horizontal con los días -->
       <ul class="eje">
         @for (punto of puntos(); track punto.fecha.getTime()) {
           <li class="eje__etiqueta">{{ punto.etiquetaCorta }}</li>

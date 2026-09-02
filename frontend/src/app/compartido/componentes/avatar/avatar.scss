@@ -12,7 +12,6 @@
   overflow: hidden;
   font-weight: 600;
   letter-spacing: 0.02em;
-  // Evita que el círculo se deforme dentro de un contenedor flex.
   flex-shrink: 0;
 
   img {
@@ -21,7 +20,6 @@
     object-fit: cover;
   }
 
-  // Variante con anillo blanco: se usa cuando los avatares se superponen.
   &--con-borde {
     box-shadow: 0 0 0 3px var(--color-superficie);
   }

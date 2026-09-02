@@ -6,9 +6,6 @@
   height: 100%;
 }
 
-// ============================================================================
-// Botones reutilizados dentro de esta tarjeta
-// ============================================================================
 .boton-icono {
   @include m.boton-limpio;
   @include m.centrar;
@@ -47,8 +44,6 @@
     background: var(--color-superficie-suave);
   }
 
-  // Se resalta si hay filtros aplicados: el usuario ve que la tabla no está
-  // mostrando todo.
   &--activo {
     border-color: var(--color-violeta);
     color: var(--color-violeta);
@@ -73,9 +68,6 @@
   }
 }
 
-// ============================================================================
-// Barra de herramientas
-// ============================================================================
 .herramientas {
   @include m.fila(var(--esp-2));
 }
@@ -111,7 +103,6 @@
 .filtros-zona {
   position: relative;
 
-  // Capa transparente para cerrar el panel al pulsar fuera.
   &__fondo {
     position: fixed;
     inset: 0;
@@ -126,9 +117,6 @@
   }
 }
 
-// ============================================================================
-// Barra de selección múltiple
-// ============================================================================
 .seleccion {
   @include m.fila(var(--esp-3));
 
@@ -170,12 +158,7 @@
   padding: var(--esp-4) var(--esp-6);
 }
 
-// ============================================================================
-// Tabla
-// ============================================================================
 .tabla-envoltorio {
-  // En pantallas estrechas la tabla se desplaza en horizontal dentro de su
-  // propio contenedor, sin romper el diseño de la página.
   overflow-x: auto;
 
   @include m.barra-desplazamiento-fina;
@@ -184,10 +167,8 @@
 .tabla {
   width: 100%;
   border-collapse: collapse;
-  // Ancho mínimo para que las columnas no se aplasten al hacer scroll.
   min-width: 720px;
 
-  // --- Cabecera -------------------------------------------------------------
   thead th {
     padding: 12px var(--esp-4);
     background: var(--color-superficie-suave);
@@ -218,13 +199,11 @@
       color: var(--color-texto);
     }
 
-    // La columna por la que se ordena resalta su flecha.
     &--activo {
       color: var(--color-violeta);
     }
   }
 
-  // --- Filas ----------------------------------------------------------------
   tbody tr {
     border-bottom: 1px solid var(--color-borde);
     transition: background 0.12s ease;
@@ -251,7 +230,6 @@
     vertical-align: middle;
   }
 
-  // --- Columnas concretas ---------------------------------------------------
   &__casilla {
     width: 44px;
 
@@ -278,7 +256,6 @@
       color: var(--color-ingreso);
     }
 
-    // Los movimientos fallidos se marcan en rojo, como en el diseño.
     &--fallido {
       color: var(--color-egreso-fallido);
     }
@@ -291,7 +268,6 @@
   }
 }
 
-// --- Celda de comercio -------------------------------------------------------
 .comercio {
   @include m.fila(var(--esp-3));
 
@@ -316,7 +292,6 @@
   }
 }
 
-// --- Menú contextual de la fila ---------------------------------------------
 .menu-fondo {
   position: fixed;
   inset: 0;
@@ -360,9 +335,6 @@
   }
 }
 
-// ============================================================================
-// Paginación
-// ============================================================================
 .paginacion {
   display: flex;
   align-items: center;

@@ -1,7 +1,6 @@
 @use '../../../../estilos/mixins' as m;
 @use '../../../../estilos/variables' as v;
 
-// Capa flotante sobre el resto de la interfaz.
 .avisos {
   position: fixed;
   right: var(--esp-6);
@@ -10,7 +9,6 @@
   display: flex;
   flex-direction: column;
   gap: var(--esp-2);
-  // El contenedor no debe capturar clics: solo lo hacen los avisos.
   pointer-events: none;
 
   @include m.hasta(v.$punto-movil) {
@@ -30,7 +28,7 @@
   background: var(--color-texto);
   color: #fff;
   box-shadow: var(--sombra-lg);
-  pointer-events: auto;   // este sí recibe clics
+  pointer-events: auto;
   animation: entrar 0.22s ease-out;
 
   &__texto {
@@ -51,7 +49,6 @@
     }
   }
 
-  // --- Variantes ------------------------------------------------------------
   &--exito {
     background: #0b7a58;
   }

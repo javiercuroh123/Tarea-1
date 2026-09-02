@@ -1,47 +1,29 @@
-// ============================================================================
-// MIXINS Y FUNCIONES REUTILIZABLES
-// ----------------------------------------------------------------------------
-// Fragmentos de estilo que se repiten en varios componentes. Se importan con
-// `@use '../../estilos/mixins' as m;` y se aplican con `@include m.tarjeta;`.
-// ============================================================================
-
 @use 'variables' as v;
 
-// --- Estructura --------------------------------------------------------------
-
-/// Tarjeta blanca con borde redondeado: la base visual de todo el panel.
 @mixin tarjeta {
   background: var(--color-superficie);
   border-radius: var(--radio-lg);
   box-shadow: var(--sombra-md);
 }
 
-/// Centra en horizontal y vertical con flexbox.
 @mixin centrar {
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
-/// Fila flexible con separación configurable.
 @mixin fila($separacion: var(--esp-3)) {
   display: flex;
   align-items: center;
   gap: $separacion;
 }
 
-// --- Texto -------------------------------------------------------------------
-
-/// Corta el texto con puntos suspensivos en una sola línea.
 @mixin texto-truncado {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
 }
 
-// --- Interacción -------------------------------------------------------------
-
-/// Botón sin estilos del navegador, listo para personalizar.
 @mixin boton-limpio {
   border: 0;
   background: none;
@@ -51,7 +33,6 @@
   cursor: pointer;
 }
 
-/// Anillo de foco accesible (visible solo al navegar con teclado).
 @mixin foco-visible {
   &:focus-visible {
     outline: 2px solid var(--color-violeta);
@@ -59,26 +40,18 @@
   }
 }
 
-// --- Diseño adaptable --------------------------------------------------------
-
-/// Aplica estilos por debajo de un ancho dado.
-/// Ejemplo: `@include m.hasta(v.$punto-tableta) { ... }`
 @mixin hasta($ancho) {
   @media (max-width: $ancho) {
     @content;
   }
 }
 
-/// Aplica estilos por encima de un ancho dado.
 @mixin desde($ancho) {
   @media (min-width: $ancho + 1px) {
     @content;
   }
 }
 
-// --- Utilidades --------------------------------------------------------------
-
-/// Oculta un elemento visualmente pero lo mantiene para lectores de pantalla.
 @mixin solo-lectores-pantalla {
   position: absolute;
   width: 1px;
@@ -91,7 +64,6 @@
   border: 0;
 }
 
-/// Barra de desplazamiento discreta.
 @mixin barra-desplazamiento-fina {
   scrollbar-width: thin;
   scrollbar-color: var(--color-texto-tenue) transparent;

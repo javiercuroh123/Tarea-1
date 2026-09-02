@@ -18,7 +18,6 @@
     height: 36px;
     margin-bottom: var(--esp-4);
     border-radius: var(--radio-xs);
-    // `currentColor` con baja opacidad: el fondo hereda el color del icono.
     background: color-mix(in srgb, currentColor 12%, transparent);
   }
 

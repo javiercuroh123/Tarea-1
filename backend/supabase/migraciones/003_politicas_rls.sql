@@ -45,7 +45,7 @@ grant select on public.vista_transacciones_detalle to anon, authenticated;
 
 grant select, insert, update, delete on public.transacciones  to anon, authenticated;
 grant select, insert                 on public.transferencias to anon, authenticated;
-grant select, update                 on public.notificaciones to anon, authenticated;
+grant select, insert, update         on public.notificaciones to anon, authenticated;
 
 
 -- ---------------------------------------------------------------------------
@@ -132,13 +132,20 @@ create policy pol_transferencias_insercion
   to anon, authenticated
   with check (monto_origen > 0);   -- validación mínima también en la BD
 
--- --- notificaciones: leer y marcar como leídas ------------------------------
+-- --- notificaciones: leer, crear y marcar como leídas -----------------------
 drop policy if exists pol_notificaciones_lectura on public.notificaciones;
 create policy pol_notificaciones_lectura
   on public.notificaciones
   for select
   to anon, authenticated
   using (true);
+
+drop policy if exists pol_notificaciones_insercion on public.notificaciones;
+create policy pol_notificaciones_insercion
+  on public.notificaciones
+  for insert
+  to anon, authenticated
+  with check (true);
 
 drop policy if exists pol_notificaciones_actualizacion on public.notificaciones;
 create policy pol_notificaciones_actualizacion

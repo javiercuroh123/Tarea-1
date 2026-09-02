@@ -213,6 +213,8 @@ create or replace function public.fn_registrar_transferencia(
 )
 returns public.transferencias
 language plpgsql
+security definer
+set search_path = public
 as $$
 declare
   v_tasa          numeric;

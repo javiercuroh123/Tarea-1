@@ -2,7 +2,7 @@
 -- INSTALACIÓN COMPLETA DE LA BASE DE DATOS DE PAYLINE
 -- Archivo GENERADO automáticamente por scripts/generar-sql-completo.mjs
 -- No lo edites a mano: modifica los archivos originales y vuelve a generarlo.
--- Generado el 2026-09-01T23:16:07.283Z
+-- Generado el 2026-09-02T19:44:47.828Z
 -- ############################################################################
 
 
@@ -435,6 +435,8 @@ create or replace function public.fn_registrar_transferencia(
 )
 returns public.transferencias
 language plpgsql
+security definer
+set search_path = public
 as $$
 declare
   v_tasa          numeric;
@@ -569,7 +571,7 @@ grant select on public.vista_transacciones_detalle to anon, authenticated;
 
 grant select, insert, update, delete on public.transacciones  to anon, authenticated;
 grant select, insert                 on public.transferencias to anon, authenticated;
-grant select, update                 on public.notificaciones to anon, authenticated;
+grant select, insert, update         on public.notificaciones to anon, authenticated;
 
 
 -- ---------------------------------------------------------------------------
@@ -656,13 +658,20 @@ create policy pol_transferencias_insercion
   to anon, authenticated
   with check (monto_origen > 0);   -- validación mínima también en la BD
 
--- --- notificaciones: leer y marcar como leídas ------------------------------
+-- --- notificaciones: leer, crear y marcar como leídas -----------------------
 drop policy if exists pol_notificaciones_lectura on public.notificaciones;
 create policy pol_notificaciones_lectura
   on public.notificaciones
   for select
   to anon, authenticated
   using (true);
+
+drop policy if exists pol_notificaciones_insercion on public.notificaciones;
+create policy pol_notificaciones_insercion
+  on public.notificaciones
+  for insert
+  to anon, authenticated
+  with check (true);
 
 drop policy if exists pol_notificaciones_actualizacion on public.notificaciones;
 create policy pol_notificaciones_actualizacion

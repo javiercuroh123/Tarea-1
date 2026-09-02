@@ -74,6 +74,9 @@ export class TransferenciaRapida implements OnInit {
   /** true mientras el usuario mantiene pulsado el deslizante. */
   private arrastrando = false;
 
+  /** true si el usuario ha desplazado el tirador durante la interacción. */
+  private haArrastrado = false;
+
   /** Cuántos contactos caben en la fila sin desplegar. */
   private readonly CONTACTOS_VISIBLES = 4;
 
@@ -197,6 +200,7 @@ export class TransferenciaRapida implements OnInit {
     }
 
     this.arrastrando = true;
+    this.haArrastrado = false;
     // Capturamos el puntero: seguimos recibiendo eventos aunque el dedo salga
     // del botón.
     (evento.target as HTMLElement).setPointerCapture(evento.pointerId);
@@ -207,6 +211,8 @@ export class TransferenciaRapida implements OnInit {
     if (!this.arrastrando) {
       return;
     }
+
+    this.haArrastrado = true;
 
     // 56 = ancho del tirador (48) + su margen a cada lado (4 + 4).
     const limites = pista.getBoundingClientRect();
@@ -237,13 +243,30 @@ export class TransferenciaRapida implements OnInit {
   }
 
   /**
+   * Maneja el clic en el botón (por ejemplo, accesibilidad con Intro o Espacio).
+   * Si el usuario acaba de realizar un arrastre, ignora el clic sintético residual.
+   */
+  async alHacerClic(): Promise<void> {
+    if (this.haArrastrado) {
+      this.haArrastrado = false;
+      return;
+    }
+
+    await this.enviar();
+  }
+
+  /**
    * Envía la transferencia.
    * También se usa desde el teclado (Intro/Espacio sobre el botón).
    */
   async enviar(): Promise<void> {
+    if (this.enviando()) {
+      return;
+    }
+
     const contacto = this.contactoSeleccionado();
 
-    if (!contacto || !this.puedeEnviar()) {
+    if (!contacto || this.montoOrigen() <= 0) {
       this.avisos.error('Elige un destinatario y un importe válido.');
       return;
     }

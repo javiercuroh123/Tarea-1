@@ -5,6 +5,7 @@
  */
 
 export * from './supabase.servicio';
+export * from './autenticacion.servicio';
 export * from './usuarios.servicio';
 export * from './contactos.servicio';
 export * from './comercios.servicio';

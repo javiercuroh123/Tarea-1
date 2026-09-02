@@ -7,6 +7,7 @@ import {
   inject,
   signal,
 } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import {
   AvisosServicio,
   ContactosServicio,
@@ -15,7 +16,7 @@ import {
   TransferenciasServicio,
   UsuariosServicio,
 } from '../../../../nucleo/servicios';
-import { CodigoMoneda, SIMBOLOS_MONEDA } from '../../../../nucleo/modelos';
+import { CodigoMoneda, SIMBOLOS_MONEDA, Usuario } from '../../../../nucleo/modelos';
 import { Avatar, Esqueleto, Icono, Tarjeta } from '../../../../compartido';
 import { formatearMonto } from '../../../../nucleo/utilidades/formato.util';
 
@@ -36,7 +37,7 @@ import { formatearMonto } from '../../../../nucleo/utilidades/formato.util';
  */
 @Component({
   selector: 'app-transferencia-rapida',
-  imports: [Tarjeta, Avatar, Icono, Esqueleto],
+  imports: [Tarjeta, Avatar, Icono, Esqueleto, FormsModule],
   templateUrl: './transferencia-rapida.html',
   styleUrl: './transferencia-rapida.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -64,6 +65,19 @@ export class TransferenciaRapida implements OnInit {
   readonly montoOrigen = signal<number>(275);
   readonly monedaOrigen = signal<CodigoMoneda>('EUR');
   readonly monedaDestino = signal<CodigoMoneda>('USD');
+
+  // --- Modal de Nuevo Destinatario -------------------------------------------
+  readonly modalContactoAbierto = signal(false);
+  readonly cargandoUsuariosRegistrados = signal(false);
+  readonly guardandoContacto = signal(false);
+  readonly usuariosRegistrados = signal<Usuario[]>([]);
+  readonly tabModal = signal<'registrados' | 'manual'>('registrados');
+
+  readonly nuevoNombre = signal('');
+  readonly nuevoCorreo = signal('');
+  readonly nuevaMoneda = signal<CodigoMoneda>('USD');
+  readonly nuevoFavorito = signal(true);
+  readonly errorModal = signal<string | null>(null);
 
   /** Posición del deslizante, de 0 (izquierda) a 1 (final). */
   readonly progreso = signal(0);
@@ -291,6 +305,92 @@ export class TransferenciaRapida implements OnInit {
       ]);
     } catch (error) {
       this.avisos.error(error instanceof Error ? error.message : 'No se pudo enviar.');
+    }
+  }
+
+  // ==========================================================================
+  // GESTIÓN DE NUEVOS DESTINATARIOS
+  // ==========================================================================
+
+  /** Abre el modal para agregar destinatarios. */
+  async abrirModalContacto(): Promise<void> {
+    this.modalContactoAbierto.set(true);
+    this.nuevoNombre.set('');
+    this.nuevoCorreo.set('');
+    this.nuevaMoneda.set('USD');
+    this.nuevoFavorito.set(true);
+    this.errorModal.set(null);
+    this.cargandoUsuariosRegistrados.set(true);
+
+    try {
+      const usuarios = await this.contactosServicio.obtenerUsuariosRegistrados();
+      this.usuariosRegistrados.set(usuarios);
+      if (usuarios.length === 0) {
+        this.tabModal.set('manual');
+      } else {
+        this.tabModal.set('registrados');
+      }
+    } finally {
+      this.cargandoUsuariosRegistrados.set(false);
+    }
+  }
+
+  /** Cierra el modal. */
+  cerrarModalContacto(): void {
+    this.modalContactoAbierto.set(false);
+    this.errorModal.set(null);
+  }
+
+  /** Agrega a un usuario registrado de Payline como destinatario. */
+  async agregarUsuarioDirecto(usuario: Usuario): Promise<void> {
+    this.guardandoContacto.set(true);
+    this.errorModal.set(null);
+
+    try {
+      const creado = await this.contactosServicio.crear({
+        nombre: usuario.nombre_completo,
+        correo: usuario.correo,
+        color_avatar: usuario.color_avatar,
+        moneda_preferida: usuario.moneda_base,
+        favorito: true,
+      });
+
+      this.contactoSeleccionadoId.set(creado.id);
+      this.avisos.exito(`Destinatario ${creado.nombre} agregado.`);
+      this.cerrarModalContacto();
+    } catch (error) {
+      this.errorModal.set(error instanceof Error ? error.message : 'No se pudo agregar el usuario.');
+    } finally {
+      this.guardandoContacto.set(false);
+    }
+  }
+
+  /** Guarda un contacto ingresado manualmente en el formulario. */
+  async guardarContactoManual(): Promise<void> {
+    const nombre = this.nuevoNombre().trim();
+    if (!nombre) {
+      this.errorModal.set('El nombre del destinatario es obligatorio.');
+      return;
+    }
+
+    this.guardandoContacto.set(true);
+    this.errorModal.set(null);
+
+    try {
+      const creado = await this.contactosServicio.crear({
+        nombre,
+        correo: this.nuevoCorreo() || undefined,
+        moneda_preferida: this.nuevaMoneda(),
+        favorito: this.nuevoFavorito(),
+      });
+
+      this.contactoSeleccionadoId.set(creado.id);
+      this.avisos.exito(`Destinatario ${creado.nombre} agregado.`);
+      this.cerrarModalContacto();
+    } catch (error) {
+      this.errorModal.set(error instanceof Error ? error.message : 'No se pudo guardar el contacto.');
+    } finally {
+      this.guardandoContacto.set(false);
     }
   }
 }

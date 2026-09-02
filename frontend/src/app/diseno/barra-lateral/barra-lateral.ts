@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { RouterLink, RouterLinkActive } from '@angular/router';
 import { Icono, NombreIcono } from '../../compartido';
+import { AutenticacionServicio } from '../../nucleo/servicios';
 
 /** Estructura de cada botón del menú. */
 interface OpcionMenu {
@@ -27,6 +28,8 @@ interface OpcionMenu {
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class BarraLateral {
+  private readonly auth = inject(AutenticacionServicio);
+
   /** Opciones principales (parte superior). */
   readonly opciones: readonly OpcionMenu[] = [
     { ruta: '/panel', icono: 'cuadricula', etiqueta: 'Panel' },
@@ -39,4 +42,9 @@ export class BarraLateral {
     { ruta: '/ajustes', icono: 'ajustes', etiqueta: 'Ajustes' },
     { ruta: '/ayuda', icono: 'ayuda', etiqueta: 'Ayuda' },
   ];
+
+  /** Cierra la sesión y redirige al login. */
+  async cerrarSesion(): Promise<void> {
+    await this.auth.cerrarSesion();
+  }
 }

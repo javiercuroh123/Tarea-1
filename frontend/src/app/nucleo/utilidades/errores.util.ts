@@ -38,6 +38,18 @@ const TRADUCCIONES: ReadonlyArray<{ patron: RegExp; mensaje: string }> = [
     patron: /Invalid API key/i,
     mensaje: 'La clave de Supabase no es válida. Revisa environment.ts.',
   },
+  {
+    patron: /Email not confirmed/i,
+    mensaje: 'Este correo no ha sido confirmado aún en Supabase.',
+  },
+  {
+    patron: /Invalid login credentials/i,
+    mensaje: 'Correo o contraseña incorrectos.',
+  },
+  {
+    patron: /User already registered/i,
+    mensaje: 'Ya existe una cuenta registrada con este correo.',
+  },
 ];
 
 /**

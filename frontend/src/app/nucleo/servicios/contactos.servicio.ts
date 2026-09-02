@@ -58,4 +58,67 @@ export class ContactosServicio {
   porId(id: string): Contacto | undefined {
     return this._contactos().find((contacto) => contacto.id === id);
   }
+
+  /**
+   * Obtiene la lista de otros usuarios registrados en Payline para sugerirlos
+   * como posibles contactos.
+   */
+  async obtenerUsuariosRegistrados(): Promise<import('../modelos').Usuario[]> {
+    try {
+      const { data, error } = await this.supabase
+        .tabla('usuarios')
+        .select('*')
+        .neq('id', this.usuarios.usuarioActivoId)
+        .order('nombre_completo', { ascending: true });
+
+      if (error) {
+        throw error;
+      }
+
+      return (data ?? []) as import('../modelos').Usuario[];
+    } catch (error) {
+      registrarError('ContactosServicio.obtenerUsuariosRegistrados', error);
+      return [];
+    }
+  }
+
+  /**
+   * Crea un nuevo contacto asociado al usuario activo.
+   */
+  async crear(datos: {
+    nombre: string;
+    correo?: string;
+    color_avatar?: string;
+    moneda_preferida?: import('../modelos').CodigoMoneda;
+    favorito?: boolean;
+  }): Promise<Contacto> {
+    try {
+      const nuevoContacto = {
+        usuario_id: this.usuarios.usuarioActivoId,
+        nombre: datos.nombre.trim(),
+        correo: datos.correo ? datos.correo.trim().toLowerCase() : null,
+        color_avatar: datos.color_avatar ?? '#6C5CE7',
+        moneda_preferida: datos.moneda_preferida ?? 'USD',
+        favorito: datos.favorito ?? false,
+      };
+
+      const { data, error } = await this.supabase
+        .tabla('contactos')
+        .insert(nuevoContacto)
+        .select('*')
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      const creado = data as Contacto;
+      // Actualizamos la señal de contactos
+      this._contactos.update((actuales) => [creado, ...actuales]);
+      return creado;
+    } catch (error) {
+      registrarError('ContactosServicio.crear', error);
+      throw new Error(mensajeDeError(error, 'No se pudo guardar el contacto.'));
+    }
+  }
 }

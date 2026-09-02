@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { LayoutPrincipal } from './diseno/layout-principal/layout-principal';
+import { autenticacionGuard, publicoGuard } from './nucleo/guardas/autenticacion.guard';
 
 /**
  * TABLA DE RUTAS DE LA APLICACIÓN
@@ -17,9 +18,21 @@ import { LayoutPrincipal } from './diseno/layout-principal/layout-principal';
  *    <h1>. El componente `Encabezado` lo lee de la ruta activa.
  */
 export const routes: Routes = [
+  // --- Pantalla de inicio de sesión / registro ------------------------------
+  {
+    path: 'login',
+    title: 'Iniciar sesión · Payline',
+    canActivate: [publicoGuard],
+    loadComponent: () =>
+      import(
+        './funcionalidades/autenticacion/paginas/login-pagina/login-pagina'
+      ).then((m) => m.LoginPagina),
+  },
+
   {
     path: '',
     component: LayoutPrincipal,
+    canActivate: [autenticacionGuard],
     children: [
       // --- Redirección inicial ------------------------------------------------
       {

@@ -1,9 +1,10 @@
-import { Injectable, computed, inject, signal } from '@angular/core';
+import { Injectable, computed, effect, inject, signal } from '@angular/core';
 import { environment } from '../../../environments/environment';
 import { EstadoCarga, ResumenUsuario, ResumenUsuarioCrudo, Usuario } from '../modelos';
 import { aNumero } from '../utilidades/formato.util';
 import { mensajeDeError, registrarError } from '../utilidades/errores.util';
 import { SupabaseServicio } from './supabase.servicio';
+import { AutenticacionServicio } from './autenticacion.servicio';
 
 /**
  * SERVICIO DE USUARIOS
@@ -20,6 +21,7 @@ import { SupabaseServicio } from './supabase.servicio';
 @Injectable({ providedIn: 'root' })
 export class UsuariosServicio {
   private readonly supabase = inject(SupabaseServicio);
+  private readonly auth = inject(AutenticacionServicio);
 
   // --- Estado ----------------------------------------------------------------
   private readonly _usuario = signal<Usuario | null>(null);
@@ -37,11 +39,23 @@ export class UsuariosServicio {
 
   /**
    * Id del usuario activo.
-   * Hoy sale de la configuración; el día que se añada Supabase Auth vendrá de
-   * la sesión (`auth.uid()`) sin que el resto de la aplicación se entere.
+   * Proviene de la sesión de Supabase Auth o del modo demo.
    */
   get usuarioActivoId(): string {
-    return environment.usuarioDemoId;
+    return this.auth.usuarioActivoId() ?? environment.usuarioDemoId;
+  }
+
+  constructor() {
+    // Cuando cambie el usuario autenticado, recargamos sus datos
+    effect(() => {
+      const id = this.auth.usuarioActivoId();
+      if (id) {
+        void this.cargar();
+      } else {
+        this._usuario.set(null);
+        this._resumen.set(null);
+      }
+    });
   }
 
   /**
@@ -75,14 +89,54 @@ export class UsuariosServicio {
 
   /** Trae la fila del usuario activo. */
   private async cargarUsuario(): Promise<void> {
+    const id = this.usuarioActivoId;
+    if (!id) {
+      this._usuario.set(null);
+      return;
+    }
+
     const { data, error } = await this.supabase
       .tabla('usuarios')
       .select('*')
-      .eq('id', this.usuarioActivoId)
-      .single();          // esperamos exactamente una fila
+      .eq('id', id)
+      .maybeSingle();
 
     if (error) {
       throw error;
+    }
+
+    if (!data) {
+      const authUser = this.auth.usuarioAuth();
+      const nombre =
+        (authUser?.user_metadata?.['nombre_completo'] as string) ||
+        authUser?.email?.split('@')[0] ||
+        'Usuario';
+
+      const nuevoPerfil: Usuario = {
+        id,
+        nombre_completo: nombre,
+        correo: authUser?.email || 'usuario@payline.dev',
+        rol: 'ADMIN',
+        avatar_url: null,
+        color_avatar: '#5B4DF0',
+        moneda_base: 'EUR',
+        creado_en: new Date().toISOString(),
+        actualizado_en: new Date().toISOString(),
+      };
+
+      try {
+        const { data: creado } = await this.supabase
+          .tabla('usuarios')
+          .insert(nuevoPerfil)
+          .select('*')
+          .maybeSingle();
+
+        this._usuario.set(creado ? (creado as Usuario) : nuevoPerfil);
+      } catch (e) {
+        registrarError('UsuariosServicio.crearPerfil', e);
+        this._usuario.set(nuevoPerfil);
+      }
+      return;
     }
 
     this._usuario.set(data as Usuario);

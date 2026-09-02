@@ -29,10 +29,8 @@ export class SupabaseServicio {
     environment.supabaseClaveAnonima,
     {
       auth: {
-        // Este proyecto no usa login, así que desactivamos el guardado de
-        // sesión para no dejar datos innecesarios en el navegador.
-        persistSession: false,
-        autoRefreshToken: false,
+        persistSession: true,
+        autoRefreshToken: true,
       },
       db: {
         schema: 'public',

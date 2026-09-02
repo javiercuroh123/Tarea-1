@@ -29,10 +29,34 @@
             <span class="contactos__nombre">{{ contacto.nombre.split(' ')[0] }}</span>
           </button>
         </li>
-      } @empty {
-        <li class="contactos__vacio">No hay contactos.</li>
       }
+
+      <!-- Botón para añadir nuevo contacto -->
+      <li>
+        <button
+          type="button"
+          class="contactos__boton contactos__boton--agregar"
+          title="Agregar nuevo destinatario"
+          aria-label="Agregar nuevo destinatario"
+          (click)="abrirModalContacto()"
+        >
+          <span class="contactos__circulo-mas" aria-hidden="true">
+            <app-icono nombre="mas" [tamano]="20" />
+          </span>
+          <span class="contactos__nombre">Nuevo</span>
+        </button>
+      </li>
     </ul>
+
+    @if (contactos().length === 0) {
+      <div class="contactos__vacio-bloque">
+        <p class="contactos__vacio">No tienes destinatarios aún.</p>
+        <button type="button" class="contactos__enlace-agregar" (click)="abrirModalContacto()">
+          <app-icono nombre="mas" [tamano]="15" />
+          <span>Agregar destinatario</span>
+        </button>
+      </div>
+    }
   }
 
   <!-- ============ Importe de origen ============ -->
@@ -157,3 +181,162 @@
     </span>
   </div>
 </app-tarjeta>
+
+<!-- ============ Modal de Nuevo Destinatario ============ -->
+@if (modalContactoAbierto()) {
+  <div class="modal-fondo" (click)="cerrarModalContacto()">
+    <div
+      class="modal-tarjeta"
+      role="dialog"
+      aria-label="Agregar destinatario"
+      (click)="$event.stopPropagation()"
+    >
+      <header class="modal-cabecera">
+        <div>
+          <h2 class="modal-titulo">Nuevo destinatario</h2>
+          <p class="modal-subtitulo">Vincula un perfil para transferir dinero</p>
+        </div>
+        <button
+          type="button"
+          class="modal-cerrar"
+          aria-label="Cerrar modal"
+          (click)="cerrarModalContacto()"
+        >
+          <app-icono nombre="cerrar" [tamano]="18" />
+        </button>
+      </header>
+
+      <!-- Selector de pestañas -->
+      <nav class="modal-tabs" aria-label="Modo de agregar contacto">
+        <button
+          type="button"
+          class="modal-tab"
+          [class.modal-tab--activo]="tabModal() === 'registrados'"
+          (click)="tabModal.set('registrados')"
+        >
+          Usuarios en Payline
+        </button>
+        <button
+          type="button"
+          class="modal-tab"
+          [class.modal-tab--activo]="tabModal() === 'manual'"
+          (click)="tabModal.set('manual')"
+        >
+          Ingresar manualmente
+        </button>
+      </nav>
+
+      @if (errorModal()) {
+        <div class="modal-alerta" role="alert">
+          <app-icono nombre="x-circulo" [tamano]="16" />
+          <span>{{ errorModal() }}</span>
+        </div>
+      }
+
+      @if (tabModal() === 'registrados') {
+        <div class="modal-lista-usuarios">
+          @if (cargandoUsuariosRegistrados()) {
+            <p class="modal-cargando">Buscando usuarios registrados...</p>
+          } @else {
+            @for (usr of usuariosRegistrados(); track usr.id) {
+              <div class="usuario-fila">
+                <app-avatar
+                  [nombre]="usr.nombre_completo"
+                  [url]="usr.avatar_url"
+                  [color]="usr.color_avatar"
+                  [tamano]="40"
+                />
+                <div class="usuario-fila__info">
+                  <p class="usuario-fila__nombre">{{ usr.nombre_completo }}</p>
+                  <p class="usuario-fila__correo">{{ usr.correo }}</p>
+                </div>
+                <button
+                  type="button"
+                  class="usuario-fila__boton"
+                  [disabled]="guardandoContacto()"
+                  (click)="agregarUsuarioDirecto(usr)"
+                >
+                  Agregar
+                </button>
+              </div>
+            } @empty {
+              <div class="modal-vacio">
+                <p>No se encontraron otros usuarios registrados en el sistema.</p>
+                <button
+                  type="button"
+                  class="modal-boton-secundario"
+                  (click)="tabModal.set('manual')"
+                >
+                  Ingresar contacto manualmente
+                </button>
+              </div>
+            }
+          }
+        </div>
+      } @else {
+        <form class="modal-formulario" (submit)="$event.preventDefault(); guardarContactoManual()">
+          <div class="modal-campo">
+            <label for="nuevo-nombre" class="modal-campo__etiqueta">Nombre completo *</label>
+            <input
+              id="nuevo-nombre"
+              type="text"
+              class="modal-campo__input"
+              placeholder="Ej. Carlos Mendoza"
+              required
+              [value]="nuevoNombre()"
+              (input)="nuevoNombre.set($any($event.target).value)"
+            />
+          </div>
+
+          <div class="modal-campo">
+            <label for="nuevo-correo" class="modal-campo__etiqueta">
+              Correo electrónico (para transferencias P2P)
+            </label>
+            <input
+              id="nuevo-correo"
+              type="email"
+              class="modal-campo__input"
+              placeholder="carlos@correo.dev"
+              [value]="nuevoCorreo()"
+              (input)="nuevoCorreo.set($any($event.target).value)"
+            />
+            <span class="modal-campo__ayuda">
+              Si este correo coincide con un usuario de Payline, la transferencia aparecerá en su perfil.
+            </span>
+          </div>
+
+          <div class="modal-campo">
+            <label for="nueva-moneda" class="modal-campo__etiqueta">Moneda de recepción preferida</label>
+            <select
+              id="nueva-moneda"
+              class="modal-campo__select"
+              [value]="nuevaMoneda()"
+              (change)="nuevaMoneda.set($any($event.target).value)"
+            >
+              @for (m of monedas; track m) {
+                <option [value]="m">{{ m }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="modal-acciones">
+            <button
+              type="button"
+              class="modal-boton-cancelar"
+              (click)="cerrarModalContacto()"
+            >
+              Cancelar
+            </button>
+            <button
+              type="submit"
+              class="modal-boton-guardar"
+              [disabled]="guardandoContacto()"
+            >
+              {{ guardandoContacto() ? 'Guardando…' : 'Guardar destinatario' }}
+            </button>
+          </div>
+        </form>
+      }
+    </div>
+  </div>
+}

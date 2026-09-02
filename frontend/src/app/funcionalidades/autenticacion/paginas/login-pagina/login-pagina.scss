@@ -1,0 +1,315 @@
+@use '../../../../../estilos/mixins' as m;
+
+:host {
+  display: block;
+}
+
+.login-pantalla {
+  @include m.centrar;
+
+  min-height: 100vh;
+  padding: var(--esp-6);
+  background-color: var(--color-fondo);
+  background-image:
+    radial-gradient(at 0% 0%, rgba(124, 58, 237, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(204, 240, 58, 0.12) 0px, transparent 50%);
+}
+
+.login-tarjeta {
+  width: 100%;
+  max-width: 440px;
+  padding: var(--esp-8);
+  border-radius: var(--radio-lg);
+  background: var(--color-superficie);
+  box-shadow: var(--sombra-lg);
+  border: 1px solid var(--color-borde);
+  animation: aparecer 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes aparecer {
+  from {
+    opacity: 0;
+    transform: translateY(14px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+// --- Cabecera ---
+.login-cabecera {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  margin-bottom: var(--esp-6);
+}
+
+.login-logo {
+  @include m.centrar;
+
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radio-md);
+  background: var(--color-texto);
+  color: var(--color-lima);
+  margin-bottom: var(--esp-3);
+  box-shadow: 0 8px 24px rgba(20, 21, 26, 0.12);
+}
+
+.login-titulo {
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--color-texto);
+  margin: 0;
+}
+
+.login-subtitulo {
+  font-size: 13.5px;
+  color: var(--color-texto-suave);
+  margin: var(--esp-1) 0 0;
+}
+
+// --- Pestañas ---
+.login-pestanas {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  padding: 4px;
+  background: var(--color-superficie-suave);
+  border-radius: var(--radio-sm);
+  margin-bottom: var(--esp-5);
+}
+
+.login-pestana {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  padding: 10px;
+  font-size: 13.5px;
+  font-weight: 600;
+  color: var(--color-texto-suave);
+  border-radius: var(--radio-xs);
+  transition: all 0.18s ease;
+
+  &--activa {
+    background: var(--color-superficie);
+    color: var(--color-texto);
+    box-shadow: var(--sombra-sm);
+  }
+}
+
+// --- Alertas ---
+.login-alerta {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-2);
+  padding: 12px 14px;
+  border-radius: var(--radio-sm);
+  font-size: 13px;
+  line-height: 1.4;
+  margin-bottom: var(--esp-4);
+
+  &--error {
+    background: var(--color-error-fondo);
+    color: var(--color-error-texto);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+  }
+
+  &--info {
+    background: var(--color-exito-fondo);
+    color: var(--color-exito-texto);
+    border: 1px solid rgba(16, 185, 129, 0.2);
+  }
+}
+
+// --- Formulario ---
+.login-formulario {
+  display: flex;
+  flex-direction: column;
+  gap: var(--esp-4);
+}
+
+.campo {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+
+  &__etiqueta {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: var(--color-texto);
+  }
+
+  &__control {
+    position: relative;
+    display: flex;
+    align-items: center;
+  }
+
+  &__icono {
+    position: absolute;
+    left: 14px;
+    color: var(--color-texto-suave);
+    pointer-events: none;
+  }
+
+  &__input {
+    width: 100%;
+    height: 46px;
+    padding: 0 14px 0 40px;
+    border: 1px solid var(--color-borde);
+    border-radius: var(--radio-sm);
+    background: var(--color-superficie-suave);
+    font-size: 14px;
+    color: var(--color-texto);
+    transition: all 0.15s ease;
+
+    &:focus {
+      outline: none;
+      background: var(--color-superficie);
+      border-color: var(--color-violeta);
+      box-shadow: 0 0 0 3px var(--color-violeta-suave);
+    }
+
+    &::placeholder {
+      color: var(--color-texto-tenue);
+    }
+  }
+}
+
+.boton-primario {
+  @include m.boton-limpio;
+  @include m.centrar;
+  @include m.foco-visible;
+
+  width: 100%;
+  height: 48px;
+  margin-top: var(--esp-2);
+  border-radius: var(--radio-sm);
+  background: var(--color-texto);
+  color: #fff;
+  font-size: 14px;
+  font-weight: 600;
+  gap: 8px;
+  box-shadow: var(--sombra-sm);
+  transition: all 0.15s ease;
+
+  &:hover:not(:disabled) {
+    background: #252830;
+    transform: translateY(-1px);
+    box-shadow: var(--sombra-md);
+  }
+
+  &:active:not(:disabled) {
+    transform: translateY(0);
+  }
+
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+  }
+}
+
+.spinner {
+  width: 16px;
+  height: 16px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: girar 0.6s linear infinite;
+}
+
+@keyframes girar {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+// --- Divisor ---
+.login-divisor {
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  margin: var(--esp-6) 0 var(--esp-4);
+
+  &__linea {
+    flex: 1;
+    height: 1px;
+    background: var(--color-borde);
+  }
+
+  &__texto {
+    font-size: 11.5px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    color: var(--color-texto-suave);
+  }
+}
+
+// --- Botón Modo Demo ---
+.boton-demo {
+  @include m.boton-limpio;
+  @include m.foco-visible;
+
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: var(--esp-3);
+  padding: 12px 14px;
+  border-radius: var(--radio-sm);
+  border: 1px dashed var(--color-violeta-claro);
+  background: var(--color-violeta-suave);
+  text-align: left;
+  transition: all 0.15s ease;
+
+  &:hover {
+    background: #e4ddfe;
+    border-color: var(--color-violeta);
+  }
+
+  &__avatar {
+    @include m.centrar;
+
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-violeta);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+
+  &__info {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  &__titulo {
+    font-size: 13.5px;
+    font-weight: 600;
+    color: var(--color-texto);
+  }
+
+  &__subtitulo {
+    font-size: 11.5px;
+    color: var(--color-violeta);
+  }
+}
+
+// --- Pie ---
+.login-pie {
+  margin-top: var(--esp-6);
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-texto-suave);
+
+  strong {
+    color: var(--color-texto);
+  }
+}

@@ -1,0 +1,141 @@
+<main class="login-pantalla">
+  <div class="login-tarjeta">
+    <!-- Logotipo y Cabecera -->
+    <header class="login-cabecera">
+      <div class="login-logo" aria-hidden="true">
+        <svg viewBox="0 0 32 32" width="34" height="34">
+          <g fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round">
+            <path d="M4 11c4-4 8 4 12 0s8-4 12 0" />
+            <path d="M4 17c4-4 8 4 12 0s8-4 12 0" />
+            <path d="M4 23c4-4 8 4 12 0s8-4 12 0" />
+          </g>
+        </svg>
+      </div>
+      <h1 class="login-titulo">Payline</h1>
+      <p class="login-subtitulo">Panel financiero y transferencias en tiempo real</p>
+    </header>
+
+    <!-- Selector de modo (Pestañas) -->
+    <nav class="login-pestanas" aria-label="Modo de autenticación">
+      <button
+        type="button"
+        class="login-pestana"
+        [class.login-pestana--activa]="modo() === 'login'"
+        (click)="cambiarModo('login')"
+      >
+        Iniciar sesión
+      </button>
+      <button
+        type="button"
+        class="login-pestana"
+        [class.login-pestana--activa]="modo() === 'registro'"
+        (click)="cambiarModo('registro')"
+      >
+        Crear cuenta
+      </button>
+    </nav>
+
+    <!-- Avisos de error e información -->
+    @if (errorMensaje()) {
+      <div class="login-alerta login-alerta--error" role="alert">
+        <app-icono nombre="x-circulo" [tamano]="18" />
+        <span>{{ errorMensaje() }}</span>
+      </div>
+    }
+
+    @if (infoMensaje()) {
+      <div class="login-alerta login-alerta--info" role="status">
+        <app-icono nombre="check-circulo" [tamano]="18" />
+        <span>{{ infoMensaje() }}</span>
+      </div>
+    }
+
+    <!-- Formulario principal -->
+    <form class="login-formulario" (submit)="onSubmit($event)">
+      @if (modo() === 'registro') {
+        <div class="campo">
+          <label for="campo-nombre" class="campo__etiqueta">Nombre completo</label>
+          <div class="campo__control">
+            <app-icono nombre="usuario" [tamano]="16" class="campo__icono" />
+            <input
+              id="campo-nombre"
+              type="text"
+              class="campo__input"
+              placeholder="Ej. Alex Gómez"
+              required
+              autocomplete="name"
+              [value]="nombreCompleto()"
+              (input)="nombreCompleto.set($any($event.target).value)"
+            />
+          </div>
+        </div>
+      }
+
+      <div class="campo">
+        <label for="campo-correo" class="campo__etiqueta">Correo electrónico</label>
+        <div class="campo__control">
+          <app-icono nombre="correo" [tamano]="16" class="campo__icono" />
+          <input
+            id="campo-correo"
+            type="email"
+            class="campo__input"
+            placeholder="tu@correo.dev"
+            required
+            autocomplete="email"
+            [value]="correo()"
+            (input)="correo.set($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <div class="campo">
+        <label for="campo-contrasena" class="campo__etiqueta">Contraseña</label>
+        <div class="campo__control">
+          <app-icono nombre="candado" [tamano]="16" class="campo__icono" />
+          <input
+            id="campo-contrasena"
+            type="password"
+            class="campo__input"
+            placeholder="••••••••"
+            required
+            minlength="6"
+            autocomplete="current-password"
+            [value]="contrasena()"
+            (input)="contrasena.set($any($event.target).value)"
+          />
+        </div>
+      </div>
+
+      <button type="submit" class="boton-primario" [disabled]="cargando()">
+        @if (cargando()) {
+          <span class="spinner" aria-hidden="true"></span>
+          <span>Procesando...</span>
+        } @else {
+          <span>{{ modo() === 'login' ? 'Iniciar sesión' : 'Crear mi cuenta' }}</span>
+        }
+      </button>
+    </form>
+
+    <!-- Separador -->
+    <div class="login-divisor">
+      <span class="login-divisor__linea"></span>
+      <span class="login-divisor__texto">o accede al instante</span>
+      <span class="login-divisor__linea"></span>
+    </div>
+
+    <!-- Botón de Modo Demostración -->
+    <button type="button" class="boton-demo" (click)="entrarComoDemo()">
+      <div class="boton-demo__avatar">WG</div>
+      <div class="boton-demo__info">
+        <span class="boton-demo__titulo">Entrar como William Grace</span>
+        <span class="boton-demo__subtitulo">Modo demo con datos de prueba cargados</span>
+      </div>
+      <app-icono nombre="chevron-derecha" [tamano]="16" />
+    </button>
+
+    <!-- Pie informativo -->
+    <footer class="login-pie">
+      <p>Conexión segura mediante <strong>Supabase</strong> & <strong>PostgreSQL</strong></p>
+    </footer>
+  </div>
+</main>

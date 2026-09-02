@@ -2,7 +2,7 @@
 -- INSTALACIÓN COMPLETA DE LA BASE DE DATOS DE PAYLINE
 -- Archivo GENERADO automáticamente por scripts/generar-sql-completo.mjs
 -- No lo edites a mano: modifica los archivos originales y vuelve a generarlo.
--- Generado el 2026-09-02T19:44:47.828Z
+-- Generado el 2026-09-02T20:21:25.041Z
 -- ############################################################################
 
 
@@ -439,10 +439,12 @@ security definer
 set search_path = public
 as $$
 declare
-  v_tasa          numeric;
-  v_monto_destino numeric;
-  v_transferencia public.transferencias;
-  v_contacto      public.contactos;
+  v_tasa              numeric;
+  v_monto_destino     numeric;
+  v_transferencia     public.transferencias;
+  v_contacto          public.contactos;
+  v_destinatario_id   uuid;
+  v_remitente_nombre  text;
 begin
   -- Validación defensiva: el importe debe ser positivo.
   if p_monto is null or p_monto <= 0 then
@@ -456,6 +458,20 @@ begin
 
   if not found then
     raise exception 'El contacto indicado no pertenece al usuario';
+  end if;
+
+  -- Obtenemos el nombre del remitente
+  select nombre_completo into v_remitente_nombre
+  from public.usuarios
+  where id = p_usuario_id;
+
+  -- Comprobamos si el contacto corresponde a un usuario registrado en Payline por su correo
+  if v_contacto.correo is not null then
+    select id into v_destinatario_id
+    from public.usuarios
+    where lower(correo) = lower(v_contacto.correo)
+      and id <> p_usuario_id
+    limit 1;
   end if;
 
   -- a) Conversión de moneda con la tasa vigente.
@@ -473,29 +489,52 @@ begin
     p_usuario_id, p_contacto_id,
     p_monto, p_moneda_origen,
     v_monto_destino, p_moneda_destino,
-    v_tasa, 'pendiente', p_nota
+    v_tasa, 'completada', p_nota
   )
   returning * into v_transferencia;
 
-  -- c) Movimiento contable asociado (sale dinero de la cuenta).
+  -- c) Movimiento contable del remitente (egreso).
   insert into public.transacciones (
     usuario_id, comercio_id, monto, moneda, tipo, estado, descripcion, fecha
   )
   values (
     p_usuario_id,
     (select id from public.comercios where nombre = 'Payline' limit 1),
-    p_monto, p_moneda_origen, 'egreso', 'pendiente',
+    p_monto, p_moneda_origen, 'egreso', 'completada',
     'Transferencia a ' || v_contacto.nombre,
     now()
   );
 
-  -- d) Aviso para la campana del encabezado.
+  -- d) Notificación para el remitente.
   insert into public.notificaciones (usuario_id, titulo, mensaje)
   values (
     p_usuario_id,
     'Transferencia enviada',
     'Has enviado ' || p_monto || ' ' || p_moneda_origen || ' a ' || v_contacto.nombre
   );
+
+  -- e) Si el destinatario es un usuario registrado en Payline, reflejar el ingreso en su cuenta
+  if v_destinatario_id is not null then
+    -- Movimiento contable para el destinatario (ingreso)
+    insert into public.transacciones (
+      usuario_id, comercio_id, monto, moneda, tipo, estado, descripcion, fecha
+    )
+    values (
+      v_destinatario_id,
+      (select id from public.comercios where nombre = 'Payline' limit 1),
+      v_monto_destino, p_moneda_destino, 'ingreso', 'completada',
+      'Transferencia recibida de ' || coalesce(v_remitente_nombre, 'Usuario'),
+      now()
+    );
+
+    -- Notificación para la campana del destinatario
+    insert into public.notificaciones (usuario_id, titulo, mensaje)
+    values (
+      v_destinatario_id,
+      'Transferencia recibida',
+      'Has recibido ' || v_monto_destino || ' ' || p_moneda_destino || ' de ' || coalesce(v_remitente_nombre, 'un usuario')
+    );
+  end if;
 
   return v_transferencia;
 end;
@@ -563,8 +602,8 @@ alter table public.notificaciones  enable row level security;
 -- ---------------------------------------------------------------------------
 grant usage on schema public to anon, authenticated;
 
-grant select on public.usuarios       to anon, authenticated;
-grant select on public.contactos      to anon, authenticated;
+grant select, insert, update on public.usuarios       to anon, authenticated;
+grant select, insert, update, delete on public.contactos to anon, authenticated;
 grant select on public.comercios      to anon, authenticated;
 grant select on public.tasas_cambio   to anon, authenticated;
 grant select on public.vista_transacciones_detalle to anon, authenticated;
@@ -581,13 +620,28 @@ grant select, insert, update         on public.notificaciones to anon, authentic
 --   with check -> condición que deben cumplir las filas NUEVAS o modificadas
 -- ---------------------------------------------------------------------------
 
--- --- usuarios: solo lectura -------------------------------------------------
+-- --- usuarios: lectura, creación y actualización ----------------------------
 drop policy if exists pol_usuarios_lectura on public.usuarios;
 create policy pol_usuarios_lectura
   on public.usuarios
   for select
   to anon, authenticated
   using (true);
+
+drop policy if exists pol_usuarios_insercion on public.usuarios;
+create policy pol_usuarios_insercion
+  on public.usuarios
+  for insert
+  to anon, authenticated
+  with check (true);
+
+drop policy if exists pol_usuarios_actualizacion on public.usuarios;
+create policy pol_usuarios_actualizacion
+  on public.usuarios
+  for update
+  to anon, authenticated
+  using (true)
+  with check (true);
 
 -- --- comercios: catálogo público de solo lectura ----------------------------
 drop policy if exists pol_comercios_lectura on public.comercios;
@@ -605,11 +659,33 @@ create policy pol_tasas_lectura
   to anon, authenticated
   using (true);
 
--- --- contactos: solo lectura ------------------------------------------------
+-- --- contactos: lectura, creación, edición y borrado ------------------------
 drop policy if exists pol_contactos_lectura on public.contactos;
 create policy pol_contactos_lectura
   on public.contactos
   for select
+  to anon, authenticated
+  using (true);
+
+drop policy if exists pol_contactos_insercion on public.contactos;
+create policy pol_contactos_insercion
+  on public.contactos
+  for insert
+  to anon, authenticated
+  with check (true);
+
+drop policy if exists pol_contactos_actualizacion on public.contactos;
+create policy pol_contactos_actualizacion
+  on public.contactos
+  for update
+  to anon, authenticated
+  using (true)
+  with check (true);
+
+drop policy if exists pol_contactos_borrado on public.contactos;
+create policy pol_contactos_borrado
+  on public.contactos
+  for delete
   to anon, authenticated
   using (true);
 
